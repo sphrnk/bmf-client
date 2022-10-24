@@ -1,25 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import {useContext} from "react";
+import "./App.css";
+import "./css/font-awsome.min.css";
+import Layout from "./components/Dashboard/Layout/Layout";
+import AuthPage from "./pages/AuthPage";
+import IndexPage from "./pages/Dashboard/IndexPage";
+import {Routes, Route, Navigate} from "react-router-dom";
+import AuthContext from "./store/auth-context";
+
+import SendRequestPage from "./pages/SendRequestPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const authCtx = useContext(AuthContext);
+    const {token, user} = authCtx;
+    return (
+        <>
+            <Routes>
+                {/*{!token && !user && (*/}
+                <Route path={"/login"} element={<AuthPage/>}/>
+                <Route path={"/reset-password"} element={<ResetPasswordPage/>}/>
+                <Route path={"/send-request"} element={<SendRequestPage/>}/>
+                {/*)}*/}
+                {token && user && <Route path={"/dashboard"} element={<IndexPage/>}/>}
+                <Route
+                    path="*"
+                    element={
+                        token && user ? (
+                            <Navigate replace to={"/dashboard"}/>
+                        ) : (
+                            <Navigate replace to={"/login"}/>
+                        )
+                    }
+                />
+            </Routes>
+        </>
+    );
 }
 
 export default App;
