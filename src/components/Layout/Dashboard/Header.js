@@ -13,7 +13,7 @@ const Header = () => {
         dispatch(uiActions.toggleLogout());
     };
     return (
-        <header className="h-20 py-4 px-3 sticky top-0 shadow-md bg-white">
+        <header className="h-20 py-4 px-3 z-10 sticky top-0 border-b bg-white">
             <div className="flex mx-auto justify-between items-center">
                 <div className="bg-white flex justify-center w-20 mx-0.5" onClick={toggleSidebarHandler}>
                     {/* <img

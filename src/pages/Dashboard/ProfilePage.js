@@ -1,4 +1,4 @@
-import Layout from "../../components/Dashboard/Layout/Layout";
+import Layout from "../../components/Layout/Dashboard/Layout";
 import { Link } from "react-router-dom";
 const ProfilePage = () => {
   return (

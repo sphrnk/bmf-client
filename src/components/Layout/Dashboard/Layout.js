@@ -1,16 +1,16 @@
 import {useContext, useState} from "react";
 import Header from "./Header";
-import Sidebar from "./Sidebar";
+import Sidebar from "./Sidebar/Sidebar";
 import Modal from "../../UI/Modal";
 // import AuthContext from "../../store/auth-context";
 import {useSelector} from "react-redux";
 import useHttp from "../../../hooks/use-http";
 import {useRef} from "react";
 import Footer from "./Footer";
-import CreateAccountForm from "../Forms/CreateAccountForm";
+import CreateAccountForm from "../../Forms/CreateAccountForm";
 import AuthContext from "../../../store/auth-context";
-import FirstTimeChangePasswordForm from "../Forms/FirstTimeChangePasswordForm";
-import UserActions from "./UserActions";
+import FirstTimeChangePasswordForm from "../../Forms/FirstTimeChangePasswordForm";
+import UserActions from "../../UI/UserActions";
 
 
 const Layout = (props) => {
@@ -29,13 +29,18 @@ const Layout = (props) => {
             <Sidebar isShown={isSidebarShown}/>
             {isUserActionsShown && <UserActions isSidebarShown={isSidebarShown}/>}
             <main className="flex">
-                <div className={mainClasses}>{props.children}</div>
+                <div className={mainClasses}>
+                    <div className="container mx-auto py-5 px-4">
+                        {props.children}
+                    </div>
+                </div>
             </main>
-            <Footer/>
+            {/*<AuthFooter/>*/}
             {authCtx.user.firstTimeLogin && showModal &&
                 <Modal title={"Change Password"} onConfirm={showModalHandler}>
                     <FirstTimeChangePasswordForm onConfirm={showModalHandler}/>
                 </Modal>}
+            {/*<Footer/>*/}
         </>
     );
 };

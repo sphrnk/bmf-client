@@ -13,7 +13,7 @@ const ModalOverlay = (props) => {
 
     return (
         <div
-            className="fixed z-30 my-4 top-20 left-1/4 flex flex-col p-10 rounded-xl items-center gap-6 bg-white w-2/4">
+            className="fixed z-30 my-4 top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 p-10 rounded-xl flex flex-col gap-6 bg-white w-3/4 md:w-2/4">
             <h2 className="font-semibold text-2xl self-start">{props.title}</h2>
             {props.children}
         </div>

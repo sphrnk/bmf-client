@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-.glassmorphic {
+a.active > .glassmorphic {
     background: rgba(255, 255, 255, 0.22);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(5.6px);
@@ -38,4 +38,9 @@ html, body, #root {
     100% {
         transform: rotate(360deg);
     }
+}
+
+
+.MuiSelect-select{
+    padding: 8px 16px !important;
 }

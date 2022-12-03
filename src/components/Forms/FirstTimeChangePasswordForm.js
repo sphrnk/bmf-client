@@ -1,9 +1,9 @@
-import useHttp from "../../../hooks/use-http";
+import useHttp from "../../hooks/use-http";
 import {useRef, useContext} from "react";
-import {updatePassword} from "../../../lib/api";
-import LoadingSpinner from "../../UI/LoadingSpinner";
-import Notif from "../../UI/Notif";
-import AuthContext from "../../../store/auth-context";
+import {updatePassword} from "../../lib/api/auth";
+import LoadingSpinner from "../UI/LoadingSpinner";
+import Notif from "../UI/Notif";
+import AuthContext from "../../store/auth-context";
 
 const FirstTimeChangePasswordForm = (props) => {
     const {sendRequest, status, data, error} = useHttp(updatePassword);
@@ -24,7 +24,7 @@ const FirstTimeChangePasswordForm = (props) => {
     }
     if (status === "completed" && data) {
         const {user, token: secondToken} = data.data;
-        console.log(user);
+        // console.log(user);
         const remainingMilliseconds = 60 * 60 * 1000;
         const expiryDate = new Date(
             new Date().getTime() + remainingMilliseconds
@@ -37,7 +37,7 @@ const FirstTimeChangePasswordForm = (props) => {
     }
     return (<form
         onSubmit={changePasswordHandler}
-        action="client/src/components/Dashboard/Layout/Layout#"
+        action="client/src/components/Layout/Dashboard/Layout#"
         className="flex gap-6 flex-col w-full"
     >
         <div className="grid grid-cols-1 gap-4">
@@ -52,7 +52,7 @@ const FirstTimeChangePasswordForm = (props) => {
                     ref={passwordInputRef}
                     required
                 />
-                <small className="text-red-600">*some error*</small>
+                {/*<small className="text-red-600">*some error*</small>*/}
             </div>
         </div>
         {reqStatus}

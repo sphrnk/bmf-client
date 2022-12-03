@@ -1,8 +1,8 @@
 import {useDispatch, useSelector} from "react-redux";
 import userActions from "./UserActions";
-import {uiActions} from "../../../store/ui-slice";
+import {uiActions} from "../../store/ui-slice";
 import {useContext} from "react";
-import AuthContext from "../../../store/auth-context";
+import AuthContext from "../../store/auth-context";
 
 const UserActions = (props) => {
     const dispatch = useDispatch();

@@ -1,125 +1,88 @@
 import {useContext, useRef, useState} from "react";
-import {login} from "../../lib/api";
-import {useNavigate} from "react-router-dom";
+import {resetPassword} from "../../lib/api/auth";
+import {useNavigate, useParams} from "react-router-dom";
 import AuthContext from "../../store/auth-context";
 import {Link} from "react-router-dom";
 import useHttp from "../../hooks/use-http";
 
-const AuthForm = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const emailInputRef = useRef();
+const ResetPasswordForm = () => {
     const passwordInputRef = useRef();
-    const authCtx = useContext(AuthContext);
-    //   const history = useHistory();
-    const navigate = useNavigate();
-    const {sendRequest, status, data, error} = useHttp(login);
+    const {sendRequest, status, data, error} = useHttp(resetPassword);
+    const {token} = useParams();
+    console.log(token);
     const submitHandler = async (event) => {
-
         event.preventDefault();
-        const enteredEmail = emailInputRef.current.value;
         const enteredPassword = passwordInputRef.current.value;
-        setIsLoading(true);
-        try {
-            const data = await login({enteredEmail, enteredPassword});
-            console.log(data);
-            const {user, token} = data.data;
-            console.log(user);
-            const remainingMilliseconds = 60 * 60 * 1000;
-            const expiryDate = new Date(
-                new Date().getTime() + remainingMilliseconds
-            );
-            authCtx.login(user, token, expiryDate);
-            navigate("/profile");
-        } catch (e) {
-            console.log(e);
-        }
+        await sendRequest({password: enteredPassword, params: token})
     };
 
     return (
         <>
-            <div className="container mx-auto px-4">
-                <div className="my-3">
-                    <h1 className="uppercase text-center text-2xl font-semibold text-primary mb-4">
-                        Sign In
-                    </h1>
-                    <div className="flex w-full flex-col items-center gap-4 justify-center">
-                        <div
-                            className="w-full lg:w-5/12 sm:w-7/12 flex flex-col px-8 py-5 sm:border-2 rounded-none sm:rounded-xl items-center gap-6 bg-white ">
-                            <form
-                                onSubmit={submitHandler}
-                                className="flex gap-6 flex-col w-full"
-                            >
-                                <div className="flex flex-col gap-3">
-                                    <label htmlFor="email" className="text-primary">
-                                        Email
-                                    </label>
-                                    <input
-                                        id="email"
-                                        name="email"
-                                        className="border-2 border-gray-200 py-1.5 px-2.5 rounded focus-visible:outline-none"
-                                        type="text"
-                                        ref={emailInputRef}
-                                        required
-                                    />
-                                    <small className="text-red-600">*some error*</small>
-                                </div>
-                                <div className="flex flex-col gap-3">
-                                    <label htmlFor="password" className="text-primary">
-                                        Password
-                                    </label>
-                                    <input
-                                        id="password"
-                                        name="password"
-                                        className="border-2 border-gray-200 py-1.5 px-2.5 rounded focus-visible:outline-none"
-                                        type="password"
-                                        ref={passwordInputRef}
-                                        required
-                                    />
-                                    <small className="text-red-600">*some error*</small>
-                                </div>
+            <h1 className="uppercase text-center text-2xl font-semibold text-primary mb-4">
+                Reset Password
+            </h1>
+            <div className="flex w-full flex-col items-center gap-4 justify-center">
+                <div
+                    className="w-full lg:w-5/12 sm:w-7/12 flex flex-col px-8 py-5 sm:border-2 rounded-none sm:rounded-xl items-center gap-6 bg-white ">
+                    <form
+                        onSubmit={submitHandler}
+                        className="flex gap-6 flex-col w-full"
+                    >
+                        <div className="flex flex-col gap-3">
+                            <label htmlFor="password" className="text-primary">
+                                New Password
+                            </label>
+                            <input
+                                id="password"
+                                name="password"
+                                className="border-2 border-gray-200 py-1.5 px-2.5 rounded focus-visible:outline-none"
+                                type="password"
+                                ref={passwordInputRef}
+                                required
+                            />
+                            {/*<small className="text-red-600">*some error*</small>*/}
+                        </div>
 
-                                {!isLoading && (
-                                    <button
-                                        type="submit"
-                                        id="submit-form"
-                                        name="submit"
-                                        className="rounded bg-primary px-2.5 py-1.5 text-white"
-                                    >
-                                        Log in
-                                    </button>
-                                )}
-                                {isLoading && (
-                                    <button
-                                        type="submit"
-                                        id="submit-form"
-                                        name="submit"
-                                        className="rounded bg-primary px-2.5 py-1.5 text-white"
-                                    >
-                                        Loading...
-                                    </button>
-                                )}
-                            </form>
-                            <div className="w-full flex gap-3">
-                                <span className="text-gray-600">Forgot password?</span>
-                                <a href="client/src/components/Forms/AuthForm" className="text-primary underline">
-                                    Reset Password
-                                </a>
-                            </div>
-                        </div>
-                        <div className="flex w-full lg:w-5/12 sm:w-7/12 text-center gap-2 text-primary px-8 flex-col">
-                            <span className="uppercase">New to BMF?</span>
-                            <Link
-                                to="/send-request"
-                                className="rounded-full text-primary border-primary-light border px-2.5 py-1 transition hover:bg-primary hover:text-white"
-                            >
-                                Send a request
-                            </Link>
-                        </div>
-                    </div>
+                        {/*{!isLoading && (*/}
+                        <button
+                            type="submit"
+                            id="submit-form"
+                            name="submit"
+                            className="rounded bg-primary px-2.5 py-1.5 text-white"
+                        >
+                            Reset Password
+                        </button>
+                        {/*)}*/}
+                        {/*{isLoading && (*/}
+                        {/*<button*/}
+                        {/*    type="submit"*/}
+                        {/*        id="submit-form"*/}
+                        {/*        name="submit"*/}
+                        {/*        className="rounded bg-primary px-2.5 py-1.5 text-white"*/}
+                        {/*    >*/}
+                        {/*        Loading...*/}
+                        {/*    </button>*/}
+                        {/*)}*/}
+                    </form>
+                    {/*<div className="w-full flex gap-3">*/}
+                    {/*    <span className="text-gray-600">Forgot password?</span>*/}
+                    {/*    <a href="client/src/components/Forms/AuthForm" className="text-primary underline">*/}
+                    {/*        Reset Password*/}
+                    {/*    </a>*/}
+                    {/*</div>*/}
                 </div>
+                {/*<div className="flex w-full lg:w-5/12 sm:w-7/12 text-center gap-2 text-primary px-8 flex-col">*/}
+                {/*    <span className="uppercase">New to BMF?</span>*/}
+                {/*    <Link*/}
+                {/*        to="/send-request"*/}
+                {/*        className="rounded-full text-primary border-primary-light border px-2.5 py-1 transition hover:bg-primary hover:text-white"*/}
+                {/*    >*/}
+                {/*        Send a request*/}
+                {/*    </Link>*/}
+                {/*</div>*/}
             </div>
         </>
     );
 };
 
-export default AuthForm;
+export default ResetPasswordForm;

@@ -1,9 +1,9 @@
-import useHttp from "../../../hooks/use-http";
+import useHttp from "../../hooks/use-http";
 import {useRef, useContext} from "react";
-import {createUser} from "../../../lib/api";
-import LoadingSpinner from "../../UI/LoadingSpinner";
-import Notif from "../../UI/Notif";
-import AuthContext from "../../../store/auth-context";
+import {createUser} from "../../lib/api/users";
+import LoadingSpinner from "../UI/LoadingSpinner";
+import Notif from "../UI/Notif";
+import AuthContext from "../../store/auth-context";
 
 const CreateAccountForm = (props) => {
     const {sendRequest, status, data, error} = useHttp(createUser);
@@ -31,12 +31,12 @@ const CreateAccountForm = (props) => {
             token,
         });
     };
-    console.log(data, error);
+    // console.log(data, error);
     if (status === "pending") {
         reqStatus = <LoadingSpinner/>
     }
     if (data) {
-        console.log(data);
+        // console.log(data);
         reqStatus = <Notif status={"success"}
                            text={"Account Created Successfully, if the email is correct user will get his information!"}/>
     }
@@ -45,7 +45,7 @@ const CreateAccountForm = (props) => {
     }
     return (<form
         onSubmit={createAccountSubmitHandler}
-        action="client/src/components/Dashboard/Layout/Layout#"
+        action="client/src/components/Layout/Dashboard/Layout#"
         className="flex gap-6 flex-col w-full"
     >
         <div className="grid grid-cols-3 gap-4">
@@ -60,7 +60,7 @@ const CreateAccountForm = (props) => {
                     ref={firstNameInputRef}
                     required
                 />
-                <small className="text-red-600">*some error*</small>
+                {/*<small className="text-red-600">*some error*</small>*/}
             </div>
             <div className="flex flex-col gap-3">
                 <label htmlFor="middle-name">Middle Name</label>
@@ -72,7 +72,7 @@ const CreateAccountForm = (props) => {
                     placeholder=""
                     ref={middleNameInputRef}
                 />
-                <small className="text-red-600">*some error*</small>
+                {/*<small className="text-red-600">*some error*</small>*/}
             </div>
             <div className="flex flex-col gap-3">
                 <label htmlFor="last-name">Last Name</label>
@@ -85,7 +85,7 @@ const CreateAccountForm = (props) => {
                     ref={lastNameInputRef}
                     required
                 />
-                <small className="text-red-600">*some error*</small>
+                {/*<small className="text-red-600">*some error*</small>*/}
             </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
@@ -100,7 +100,7 @@ const CreateAccountForm = (props) => {
                     ref={emailInputRef}
                     required
                 />
-                <small className="text-red-600">*some error*</small>
+                {/*<small className="text-red-600">*some error*</small>*/}
             </div>
             <div className="flex flex-col gap-3">
                 <label htmlFor="phone">Phone</label>
@@ -113,7 +113,7 @@ const CreateAccountForm = (props) => {
                     ref={phoneNumberInputRef}
                     required
                 />
-                <small className="text-red-600">*some error*</small>
+                {/*<small className="text-red-600">*some error*</small>*/}
             </div>
         </div>
         {reqStatus}
