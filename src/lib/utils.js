@@ -2,13 +2,12 @@ const DOMAIN = process.env.REACT_APP_BACKEND_URL;
 
 export async function validateZipCode(requestData) {
     console.log(requestData)
-    const response = await fetch(`${DOMAIN}/panels/zipCode`, {
+    const response = await fetch(`${DOMAIN}/utils/zipCode`, {
         method: "POST",
         body: JSON.stringify({
             zipCode: requestData.enteredZipCode,
         }),
         headers: {
-            "Authorization": 'Bearer ' + requestData.token,
             "Content-Type": "application/json",
         }
     })

@@ -5,30 +5,30 @@ export async function createPanel(requestData) {
     let requestBodyData;
     if (requestData.panelType === "individual") {
         requestBodyData = {
-            userId: requestData.userId,
-            firstName: requestData.firstName,
-            middleName: requestData.middleName,
-            lastName: requestData.lastName,
-            email: requestData.email,
-            phoneNumber: requestData.phoneNumber,
-            panelType: 'individual'
+            userId: requestData.panelData.userId,
+            firstName: requestData.panelData.firstName,
+            middleName: requestData.panelData.middleName,
+            lastName: requestData.panelData.lastName,
+            email: requestData.panelData.email,
+            phoneNumber: requestData.panelData.phoneNumber,
+            address: requestData.panelData.address,
         }
     }
+    console.log(requestBodyData)
     if (requestData.panelType === "business") {
         requestBodyData = {
-            userId: requestData.userId,
-            companyEmail: requestData.companyEmail,
-            companyPhoneNumber: requestData.companyPhoneNumber,
-            companyName: requestData.companyName,
-            companyType: requestData.companyType,
-            UBINumber: requestData.UBINumber,
-            EINNumber: requestData.EINNumber,
-            partnersInformation: requestData.partnersInformation,
-            address: requestData.address,
-            panelType: 'business',
+            userId: requestData.panelData.userId,
+            companyEmail: requestData.panelData.companyEmail,
+            companyPhoneNumber: requestData.panelData.companyPhoneNumber,
+            companyName: requestData.panelData.companyName,
+            companyType: requestData.panelData.companyType,
+            UBINumber: requestData.panelData.UBINumber,
+            EINNumber: requestData.panelData.EINNumber,
+            partnersInformation: requestData.panelData.partnersInformation,
+            address: requestData.panelData.address,
         }
     }
-    const response = await fetch(`${DOMAIN}/panels`, {
+    const response = await fetch(`${DOMAIN}/panels/${requestData.panelType}`, {
         method: "POST",
         body: JSON.stringify(requestBodyData),
         headers: {

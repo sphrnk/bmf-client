@@ -25,7 +25,6 @@ const SelectUser = (props) => {
             req().catch((err) => console.log(err));
         }
     }, [getUsersRequest, token])
-    console.count(getUsersRequestStatus);
     if (getUsersRequestStatus === 'pending') {
         selectUser = <p>Loading users...</p>
     }
@@ -46,7 +45,6 @@ const SelectUser = (props) => {
     }
     return (
         <>
-            <p>sad</p>
             {selectUser}
         </>
     );

@@ -20,7 +20,6 @@ const Select = (props) => {
         toggleContainerHandler();
         props.onSelect(inputValue);
     }
-    console.log(selectedValue)
     const containerClasses = showContainer ? `${classes["options-container"]}` : `${classes["options-container"]} hidden`;
     const searchBoxClasses = showContainer ? `${classes["search-box"]}` : `${classes["search-box"]} hidden`;
 
