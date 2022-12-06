@@ -1,12 +1,39 @@
 import useHttp from "../../hooks/use-http";
-import {useRef, useContext} from "react";
+import React,{useState,useRef, useContext} from "react";
 import {createUser} from "../../lib/api/users";
 import LoadingSpinner from "../UI/LoadingSpinner";
 import Notif from "../UI/Notif";
 import AuthContext from "../../store/auth-context";
+import {Button, InputAdornment, TextField} from "@mui/material";
+import {IMaskInput} from "react-imask";
+import PropTypes from "prop-types";
+
+const phoneTextMaskCustom = React.forwardRef(function TextMaskCustom(props, ref) {
+    const {onChange, ...other} = props;
+    return (
+        <IMaskInput
+            {...other}
+            mask="(#00) 000-0000"
+            definitions={{
+                '#': /[0-9]/,
+            }}
+            inputRef={ref}
+            onAccept={(value) => onChange({target: {name: props.name, value}})}
+            overwrite
+        />
+    );
+});
+phoneTextMaskCustom.propTypes = {
+    name: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+};
+
 
 const CreateAccountForm = (props) => {
     const {sendRequest, status, data, error} = useHttp(createUser);
+    const [formattedInputValues, setFormattedInputValues] = useState({
+        phoneNumber: '',
+    })
     let reqStatus;
     const authCtx = useContext(AuthContext);
     const {token} = authCtx;
@@ -15,6 +42,12 @@ const CreateAccountForm = (props) => {
     const lastNameInputRef = useRef();
     const emailInputRef = useRef();
     const phoneNumberInputRef = useRef();
+    const formattedInputChangeHandler = (event) => {
+        setFormattedInputValues({
+            ...formattedInputValues,
+            [event.target.name]: event.target.value,
+        });
+    };
     const createAccountSubmitHandler = async (el) => {
         el.preventDefault();
         const enteredFirstName = firstNameInputRef.current.value;
@@ -48,92 +81,72 @@ const CreateAccountForm = (props) => {
         action="client/src/components/Layout/Dashboard/Layout#"
         className="flex gap-6 flex-col w-full"
     >
-        <div className="grid grid-cols-3 gap-4">
-            <div className="flex flex-col gap-3">
-                <label htmlFor="first-name">First Name</label>
-                <input
-                    id="first-name"
-                    name="first-name"
-                    className="border-2 border-gray-200 py-1.5 px-2.5 rounded focus-visible:outline-none"
-                    type="text"
-                    placeholder=""
-                    ref={firstNameInputRef}
-                    required
-                />
-                {/*<small className="text-red-600">*some error*</small>*/}
-            </div>
-            <div className="flex flex-col gap-3">
-                <label htmlFor="middle-name">Middle Name</label>
-                <input
-                    id="middle-name"
-                    name="middle-name"
-                    className="border-2 border-gray-200 py-1.5 px-2.5 rounded focus-visible:outline-none"
-                    type="text"
-                    placeholder=""
-                    ref={middleNameInputRef}
-                />
-                {/*<small className="text-red-600">*some error*</small>*/}
-            </div>
-            <div className="flex flex-col gap-3">
-                <label htmlFor="last-name">Last Name</label>
-                <input
-                    id="last-name"
-                    name="last-name"
-                    className="border-2 border-gray-200 py-1.5 px-2.5 rounded focus-visible:outline-none"
-                    type="text"
-                    placeholder=""
-                    ref={lastNameInputRef}
-                    required
-                />
-                {/*<small className="text-red-600">*some error*</small>*/}
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <TextField
+                label="First Name"
+                required
+                inputRef={firstNameInputRef}
+                type={'text'}
+            />
+            <TextField
+                label="Middle Name"
+                inputRef={middleNameInputRef}
+                type={'text'}
+            />
+            <TextField
+                label="Last Name"
+                required
+                inputRef={lastNameInputRef}
+                type={'text'}
+            />
         </div>
-        <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-3">
-                <label htmlFor="email">Email</label>
-                <input
-                    id="email"
-                    name="email"
-                    className="border-2 border-gray-200 py-1.5 px-2.5 rounded focus-visible:outline-none"
-                    type="text"
-                    placeholder=""
-                    ref={emailInputRef}
-                    required
-                />
-                {/*<small className="text-red-600">*some error*</small>*/}
-            </div>
-            <div className="flex flex-col gap-3">
-                <label htmlFor="phone">Phone</label>
-                <input
-                    id="phone"
-                    name="phone"
-                    className="border-2 border-gray-200 py-1.5 px-2.5 rounded focus-visible:outline-none"
-                    type="text"
-                    placeholder=""
-                    ref={phoneNumberInputRef}
-                    required
-                />
-                {/*<small className="text-red-600">*some error*</small>*/}
-            </div>
+        <div
+            className={"grid grid-cols-1 lg:grid-cols-2 gap-4"}>
+            <TextField
+                label="Email Address"
+                required
+                inputRef={emailInputRef}
+                type={'email'}
+                InputProps={{
+                    startAdornment: <InputAdornment position="start"><i
+                        className="fa-regular fa-envelope"></i></InputAdornment>,
+                }}
+            />
+            <TextField
+                label="Phone Number"
+                required
+                // ref={companyPhoneNumberInputRef}
+                name="phoneNumber"
+                value={formattedInputValues.phoneNumber}
+                onChange={formattedInputChangeHandler}
+                type={'tel'}
+                InputProps={{
+                    inputComponent: phoneTextMaskCustom,
+                    startAdornment: <InputAdornment position="start"><i
+                        className="fa-regular fa-phone-office"></i></InputAdornment>,
+                }}
+            />
+
         </div>
         {reqStatus}
         <div className="flex justify-end gap-3">
-            <button
-                onClick={props.onConfirm}
+            <Button
+                variant='text'
                 type="button"
-                className="rounded border-primary border px-2.5 py-1.5 "
+                onClick={props.onConfirm}
                 disabled={status === 'pending'}
             >
                 Cancel
-            </button>
+            </Button>
 
-            <button
+            <Button
+                variant='contained'
                 type="submit"
-                className="rounded bg-primary px-2.5 py-1.5 text-white disabled:bg-primary-light"
+                // disabled={status === 'pending'}
                 disabled={status === 'pending'}
             >
                 Create Account
-            </button>
+            </Button>
         </div>
     </form>);
 };

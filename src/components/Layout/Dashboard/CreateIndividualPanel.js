@@ -6,7 +6,7 @@ import Notif from "../../UI/Notif";
 import AuthContext from "../../../store/auth-context";
 import {IMaskInput} from "react-imask";
 import PropTypes from "prop-types";
-import {Button, InputAdornment, TextField} from "@mui/material";
+import {Button, Checkbox, FormControlLabel, FormGroup, InputAdornment, TextField} from "@mui/material";
 import {validateZipCode} from "../../../lib/utils";
 
 const phoneTextMaskCustom = React.forwardRef(function TextMaskCustom(props, ref) {
@@ -168,6 +168,7 @@ const CreateIndividualPanel = (props) => {
                             className="fa-regular fa-phone-office"></i></InputAdornment>,
                     }}
                 />
+
             </div>
             <div
                 className={page === 2 ? "grid grid-cols-1 lg:grid-cols-3 gap-4" : 'hidden'}>
@@ -227,6 +228,13 @@ const CreateIndividualPanel = (props) => {
                     }}
                 />
             </div>
+            <div
+                className={page === 2 ? "grid grid-cols-1 gap-4" : 'hidden'}>
+                <FormGroup>
+                    <FormControlLabel control={<Checkbox />} label="USA Citizen"/>
+                </FormGroup>
+            </div>
+
             {page === 1 && <div className="flex justify-end gap-3">
                 <Button
                     variant='text'
