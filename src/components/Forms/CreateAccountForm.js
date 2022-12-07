@@ -1,5 +1,5 @@
 import useHttp from "../../hooks/use-http";
-import React,{useState,useRef, useContext} from "react";
+import React, {useState, useRef, useContext} from "react";
 import {createUser} from "../../lib/api/users";
 import LoadingSpinner from "../UI/LoadingSpinner";
 import Notif from "../UI/Notif";
@@ -41,7 +41,6 @@ const CreateAccountForm = (props) => {
     const middleNameInputRef = useRef();
     const lastNameInputRef = useRef();
     const emailInputRef = useRef();
-    const phoneNumberInputRef = useRef();
     const formattedInputChangeHandler = (event) => {
         setFormattedInputValues({
             ...formattedInputValues,
@@ -54,7 +53,7 @@ const CreateAccountForm = (props) => {
         const enteredMiddleName = middleNameInputRef.current.value;
         const enteredLastName = lastNameInputRef.current.value;
         const enteredEmail = emailInputRef.current.value;
-        const enteredPhoneNumber = phoneNumberInputRef.current.value;
+        const enteredPhoneNumber = formattedInputValues.phoneNumber;
         await sendRequest({
             firstName: enteredFirstName,
             middleName: enteredMiddleName,

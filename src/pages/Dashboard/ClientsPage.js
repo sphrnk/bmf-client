@@ -23,32 +23,40 @@ const columns = [
         editable: true,
         renderCell: (params) => (
             <Link className={'underline text-primary'}
-                  to={`/clients/${params.row._id}`}>{console.log(params)} {params.value}</Link>
+                  to={`/clients/${params.row._id}`}>{params.value}</Link>
         )
     },
     {
         field: 'firstName',
-        headerName: 'First name',
+        headerName: 'First Name',
         width: 200,
         editable: true,
 
     },
     {
+        field: 'middleName',
+        headerName: 'Middle Name',
+        width: 200,
+        editable: true,
+        valueGetter: (params) =>
+            params.value === "" ? "-" : params.row.middleName,
+    },
+    {
         field: 'lastName',
-        headerName: 'Last name',
+        headerName: 'Last Name',
         width: 200,
         editable: true,
     },
     {
         field: 'phoneNumber',
-        headerName: 'Phone number',
+        headerName: 'Phone Number',
         sortable: false,
         width: 300,
     },
 ];
 
 const ClientsPage = () => {
-    const [showCreateAccountModal,setShowCreateAccountModal] = useState(false);
+    const [showCreateAccountModal, setShowCreateAccountModal] = useState(false);
     const authCtx = useContext(AuthContext);
     const {token, user} = authCtx;
     const {sendRequest: getUsersRequest, status: usersStatus, data: users, error: usersError} = useHttp(getUsers);

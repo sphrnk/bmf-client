@@ -46,7 +46,7 @@ export async function getUser(requestData) {
 
 export async function createUser(requestData) {
     console.log(requestData);
-    const response = await fetch(`${DOMAIN}/users/createAccount`, {
+    const response = await fetch(`${DOMAIN}/users/`, {
         method: "POST",
         body: JSON.stringify({
             firstName: requestData.firstName,
