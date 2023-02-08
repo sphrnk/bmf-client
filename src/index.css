@@ -2,15 +2,113 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body, #root {
+    height: 100%;
+    background-color: #f3f4f6
+}
+
+/*.MuiDataGrid-columnHeader{*/
+/*    background-color: #5f5242;*/
+/*    color: #f3f4f6;*/
+/*}*/
+.drop-file-input {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    border: 2px dashed #8d7e6d;
+    border-radius: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #F5F8FFFF;
+}
+
+.drop-file-input input {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.drop-file-input:hover,
+.drop-file-input.dragover {
+    opacity: 0.6;
+}
+
+.drop-file-input__label {
+    text-align: center;
+    color: #5f5242;
+    font-weight: 600;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.drop-file-preview {
+    margin-top: 30px;
+}
+
+.drop-file-preview p {
+    font-weight: 500;
+}
+
+.drop-file-preview__title {
+    margin-bottom: 20px;
+}
+
+.drop-file-preview__item {
+    position: relative;
+    display: flex;
+    margin-bottom: 10px;
+    background-color: #eeeeee;
+    padding: 15px;
+    border-radius: 20px;
+}
+
+.drop-file-preview__item img {
+    width: 50px;
+    margin-right: 20px;
+}
+
+.drop-file-preview__item__info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.drop-file-preview__item__del {
+    background-color: #ffffff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.drop-file-preview__item:hover .drop-file-preview__item__del {
+    opacity: 1;
+}
+
+
 a.active > .glassmorphic {
     background: rgba(255, 255, 255, 0.22);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(5.6px);
     -webkit-backdrop-filter: blur(5.6px);
-}
-
-html, body, #root {
-    height: 100%;
 }
 
 .spinner {
@@ -40,7 +138,9 @@ html, body, #root {
     }
 }
 
-
-.MuiSelect-select{
-    padding: 8px 16px !important;
-}
+/*.MuiDialogTitle-root + .css-ypiqx9-MuiDialogContent-root{*/
+/*    padding-top: inherit;*/
+/*}*/
+/*.MuiSelect-select {*/
+/*    padding: 8px 16px !important;*/
+/*}*/

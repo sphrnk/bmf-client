@@ -23,7 +23,7 @@ export async function login(requestData) {
 }
 
 export async function updatePassword(requestData) {
-    const response = await fetch(`${DOMAIN}/users/updatePassword`, {
+    const response = await fetch(`${DOMAIN}/users/updateMyPassword`, {
         method: "PATCH",
         body: JSON.stringify({
             password: requestData.password,

@@ -1,93 +1,82 @@
 import useHttp from "../../hooks/use-http";
-import {useRef, useContext, useEffect} from "react";
-import {createUser} from "../../lib/api/users";
+import {useRef, useContext, useEffect, useState} from "react"
 import LoadingSpinner from "../UI/LoadingSpinner";
 import Notif from "../UI/Notif";
 import AuthContext from "../../store/auth-context";
-import {upload} from "@testing-library/user-event/dist/upload";
-import Select from "./UI/Select";
+import {getFiles, uploadFile} from "../../lib/api/files";
+import SelectUser from "./SelectUser";
+import SelectPanel from "./SelectPanel";
+import DropZone from "../DropZone";
+import {
+    Breadcrumbs,
+    Link,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Paper,
+    Typography
+} from "@mui/material";
+import {validateZipCode} from "../../lib/utils";
 
 const UploadFileForm = (props) => {
-    const {sendRequest, status, data, error} = useHttp(createUser);
-    const dropzoneRef = useRef();
-    let reqStatus;
-    const authCtx = useContext(AuthContext);
-    const {token} = authCtx;
-    const fileInputRef = useRef();
+    const [selectedUser, setSelectedUser] = useState();
+    const [selectedPanel, setSelectedPanel] = useState();
+    const [fileList, setFileList] = useState([]);
+
     const createAccountSubmitHandler = async (el) => {
         el.preventDefault();
     };
-    if (status === "pending") {
-        reqStatus = <LoadingSpinner/>
-    }
-    if (data) {
-        // console.log(data);
-        reqStatus = <Notif status={"success"}
-                           text={"Account Created Successfully, if the email is correct user will get his information!"}/>
-    }
-    if (status === "completed" && error) {
-        reqStatus = <Notif status={"failed"} text={error}/>
-    }
-    const selectFileHandler = () => {
-        fileInputRef.current.click();
-    }
-    const uploadFilesHandler = () => {
-        props.uploadFiles(fileInputRef.current.files);
-    }
-    const showDropZone = (el) => {
-        // console.log(dropzoneRef.current)
-        dropzoneRef.current.classList.add("border-blue-400", "bg-blue-200");
-        //   dropzoneRef.current.style.display = "none";
+    const fileUploadHandler = (newFiles) => {
+        console.log(newFiles);
+        const updatedList = [...fileList, ...newFiles];
+        setFileList(updatedList)
+        props.onChangeFile(updatedList);
     }
 
-    const hideDropZone = () => {
-        // console.log('draged');
-        dropzoneRef.current.classList.remove("border-blue-400", "bg-blue-200");
-        //   dropzoneRef.current.style.display = "none";
-    }
-
-    const allowDrag = (e) => {
-        if (true) {
-            // Test that the item being dragged is a valid one
-            e.dataTransfer.dropEffect = "copy";
-            e.preventDefault();
-        }
-    }
-
-    const handleDrop = (e) => {
-        // console.log(e);
-        e.preventDefault();
-        hideDropZone();
-        fileInputRef.current.files = e.dataTransfer.files;
-        uploadFilesHandler();
-        //   alert("drop!");
+    const removeFileHandler = (itemId) => {
+        const updatedList = [...fileList].filter(file => file.id !== itemId);
+        setFileList(updatedList)
+        props.onChangeFile(updatedList);
     }
 
     return (<form
         onSubmit={createAccountSubmitHandler}
-        action="client/src/components/Layout/Dashboard/Layout#"
+        action="client/src/Layout/Dashboard/Layout#"
         className="flex gap-6 flex-col w-full"
+        encType={'multipart/form-data'}
     >
-        <input ref={fileInputRef} onChange={uploadFilesHandler} type="file" name="files[]" multiple
-               className="hidden"/>
-        <div className={"w-screen h-full fixed -top-1/2 -left-1/2"} onDragLeave={hideDropZone}
-             onDragEnter={showDropZone}
-             onDragOver={allowDrag}
-             onDrop={handleDrop}
-        >
+
+        <Typography component={'h1'} variant={"h6"} fontWeight={"bold"}>
+            Upload Files
+        </Typography>
+        <div className={"flex gap-4"}>
+            <DropZone folder onFileChange={fileUploadHandler}/>
+            <DropZone onFileChange={fileUploadHandler}/>
         </div>
-        <div ref={dropzoneRef}
-             className="left-0 cursor-pointer z-50 top-0 bg-opacity-40 border-4 text-primary rounded-lg border-dashed "
-             onClick={selectFileHandler}
-        >
-            <div className="flex items-center justify-center py-6 gap-3 flex-col">
-                <i className="fa-regular fa-file-plus fa-4x"></i>
-                <span className={"text-lg font-bold"}>Select file to upload</span>
-                {!navigator.userAgentData.mobile &&
-                    <span className={"text-sm text-gray-400"}>or drag and drop it here</span>}
-            </div>
-        </div>
-        <Select options={['1', '2', 3, 56, 45]} object={"User"}/>
+        {
+            fileList.length > 0 ? (
+                <div className="drop-file-preview">
+                    <p className="drop-file-preview__title">
+                        Ready to upload
+                    </p>
+                    {
+                        fileList.map((item, index) => (
+                            <div key={index} className="drop-file-preview__item">
+                                {/*<img src={ImageConfig[item.type.split('/')[1]] || ImageConfig['default']} alt="" />*/}
+                                <div className="drop-file-preview__item__info">
+                                    <p>{item.name}</p>
+                                    <p>{item.size}B</p>
+                                </div>
+                                <span className="drop-file-preview__item__del"
+                                      onClick={removeFileHandler.bind(null, item.id)}>x</span>
+                            </div>
+                        ))
+                    }
+                </div>
+            ) : null
+        }
     </form>);
 };
 export default UploadFileForm;

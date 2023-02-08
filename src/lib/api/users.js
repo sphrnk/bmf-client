@@ -26,6 +26,7 @@ export async function getUsers(requestData) {
 }
 
 export async function getUser(requestData) {
+    console.log(requestData)
     const response = await fetch(`${DOMAIN}/users/${requestData.clientId}`, {
         method: "GET",
         headers: {
@@ -34,7 +35,7 @@ export async function getUser(requestData) {
         },
     });
     const data = await response.json();
-
+    console.log(data);
     if (!response.ok) {
         throw new Error(data.message || "Could not fetch User.");
     }
@@ -54,6 +55,8 @@ export async function createUser(requestData) {
             lastName: requestData.lastName,
             email: requestData.email,
             phoneNumber: requestData.phoneNumber,
+            individualPortal: requestData.individualPortal,
+            businessPortal: requestData.businessPortal
         }),
         headers: {
             "Authorization": 'Bearer ' + requestData.token,
@@ -71,14 +74,18 @@ export async function createUser(requestData) {
 
 export async function updateUser(requestData) {
     console.log(requestData);
-    const response = await fetch(`${DOMAIN}/users/createAccount`, {
-        method: "POST",
+    const response = await fetch(`${DOMAIN}/users/${requestData.clientId}`, {
+        method: "PATCH",
         body: JSON.stringify({
             firstName: requestData.firstName,
             middleName: requestData.middleName,
             lastName: requestData.lastName,
             email: requestData.email,
             phoneNumber: requestData.phoneNumber,
+            individualPortal: requestData.individualPortal,
+            businessPortal: requestData.businessPortal,
+            individualPortalCount: requestData.individualPortalCount,
+            businessPortalCount: requestData.businessPortalCount,
         }),
         headers: {
             "Authorization": 'Bearer ' + requestData.token,

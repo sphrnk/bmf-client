@@ -12,7 +12,7 @@ const Select = (props) => {
         setShowContainer((prevState) => !prevState);
     }
     const selectValueHandler = (el) => {
-        console.log(el);
+
         const inputEl = el.target.id;
         const inputName = inputEl.split('|')[0];
         const inputValue = inputEl.split('|')[1];

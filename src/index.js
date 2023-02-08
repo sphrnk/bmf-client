@@ -7,10 +7,10 @@ import store from './store/index';
 import reportWebVitals from "./reportWebVitals";
 import {AuthContextProvider} from "./store/auth-context";
 import {BrowserRouter} from "react-router-dom";
-import {createTheme, StyledEngineProvider, ThemeProvider} from "@mui/material";
+import {createTheme, StyledEngineProvider, ThemeProvider, responsiveFontSizes} from "@mui/material";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-const theme = createTheme({
+let theme = createTheme({
     palette: {
         mode: "light",
         primary: {
@@ -18,16 +18,46 @@ const theme = createTheme({
             main: "#5f5242",
             dark: "#352a1b",
         }
+    },
+    // shadows: Array(25).fill('none'),
+    // typography: {
+    //
+    // }
+    components: {
+        MuiIcon: {
+            styleOverrides: {
+                root: {
+                    width: 'auto'
+                }
+            }
+        },
+        MuiDialogTitle: {
+            styleOverrides: {
+                root: {
+                    '&+.MuiDialogContent-root': {
+                        padding: '20px 24px !important'
+                    }
+                }
+            }
+        },
+        MuiDialogActions: {
+            styleOverrides: {
+                root: {
+                    padding: '20px 24px'
+                }
+            }
+        }
     }
 });
+theme = responsiveFontSizes(theme);
 root.render(
     <Provider store={store}>
         <AuthContextProvider>
             <BrowserRouter>
                 {/*<StyledEngineProvider injectFirst>*/}
-                    <ThemeProvider theme={theme}>
-                        <App/>
-                    </ThemeProvider>
+                <ThemeProvider theme={theme}>
+                    <App/>
+                </ThemeProvider>
                 {/*</StyledEngineProvider>*/}
             </BrowserRouter>
         </AuthContextProvider>

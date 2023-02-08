@@ -4,23 +4,25 @@ import {getUsers} from "../../lib/api/users";
 import LoadingSpinner from "../UI/LoadingSpinner.js";
 import Notif from "../UI/Notif.js";
 import AuthContext from "../../store/auth-context.js";
-import CreateBusinessPanel from "../Layout/Dashboard/CreateBusinessPanel";
-import CreateIndividualPanel from "../Layout/Dashboard/CreateIndividualPanel";
+import CreateBusinessPanel from "../CreateBusinessPanel";
+import CreateIndividualPanel from "../CreateIndividualPanel";
 import SelectUser from "./SelectUser";
-import {createPanel} from "../../lib/api/panels";
+import {createPanel} from "../../lib/api/portals";
 import {validateZipCode} from "../../lib/utils";
-import {ToggleButton, ToggleButtonGroup} from "@mui/material";
+import {Button, ToggleButton, ToggleButtonGroup} from "@mui/material";
+import React from "react";
+import {useNavigate} from "react-router-dom";
 
 const CreatePanelForm = (props) => {
     const [selectedUser, setSelectedUser] = useState();
     const [panelType, setPanelType] = useState('');
-
     const [showForm, setShowForm] = useState({
         businessForm: false,
         individualForm: false,
     })
     const authCtx = useContext(AuthContext);
     const {token, user} = authCtx;
+    const navigate = useNavigate();
     if (user.role !== "admin") {
         setSelectedUser(user._id)
     }
@@ -33,12 +35,14 @@ const CreatePanelForm = (props) => {
     } = useHttp(validateZipCode);
     let reqStatus;
     const selectUserHandler = (value) => {
+
         setSelectedUser(value);
     }
 
     const createPanelHandler = async (panelData) => {
-        console.log(panelData)
-        await sendCreatePanelRequest({panelData, token, panelType});
+
+        // await sendCreatePanelRequest({panelData, token, panelType});
+        props.onSubmit({...panelData, token, panelType});
     }
     const changePanelTypeHandler = (e) => {
         // console.log(e.target.value);
@@ -60,7 +64,14 @@ const CreatePanelForm = (props) => {
             setPanelType('individual')
         }
     }
-
+    if (data) {
+        // console.log(data);
+        reqStatus = <Notif status={"success"}
+                           text={"Panel Created Successfully!"}/>
+    }
+    if (status === "completed" && error) {
+        reqStatus = <Notif status={"fail"} text={error}/>
+    }
     return (
         <>
             <div className="flex w-full flex-col gap-4 mb-4">
@@ -99,8 +110,36 @@ const CreatePanelForm = (props) => {
             {showForm.individualForm &&
                 <CreateIndividualPanel onCreatePanel={createPanelHandler} onConfirm={props.onConfirm}
                                        user={selectedUser}/>}
+            {/*<div className="flex justify-end gap-3">*/}
+            {/*    <Button*/}
+            {/*        variant='outlined'*/}
+            {/*        color={'error'}*/}
+            {/*        type="button"*/}
+            {/*        onClick={() => {*/}
+            {/*            navigate('/portals')*/}
+            {/*        }}*/}
+            {/*        disabled={props.isPending}*/}
+            {/*    >*/}
+            {/*        Cancel*/}
+            {/*    </Button>*/}
 
-            {reqStatus}
+            {/*    <Button*/}
+            {/*        variant='contained'*/}
+            {/*        type="submit"*/}
+            {/*        disabled={props.isPending}*/}
+            {/*    >*/}
+            {/*        {props.isPending &&*/}
+            {/*            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"*/}
+            {/*                 xmlns="http://www.w3.org/2000/svg" fill="none"*/}
+            {/*                 viewBox="0 0 24 24">*/}
+            {/*                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"*/}
+            {/*                        strokeWidth="4"></circle>*/}
+            {/*                <path className="opacity-75" fill="currentColor"*/}
+            {/*                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>*/}
+            {/*            </svg>}*/}
+            {/*        Create Panel*/}
+            {/*    </Button>*/}
+            {/*</div>*/}
         </>
     );
 };

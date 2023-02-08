@@ -9,7 +9,7 @@ const ResetPasswordForm = () => {
     const passwordInputRef = useRef();
     const {sendRequest, status, data, error} = useHttp(resetPassword);
     const {token} = useParams();
-    console.log(token);
+
     const submitHandler = async (event) => {
         event.preventDefault();
         const enteredPassword = passwordInputRef.current.value;

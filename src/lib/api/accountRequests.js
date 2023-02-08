@@ -18,6 +18,24 @@ export async function getAccountRequests(requestData) {
     return data;
 }
 
+export async function getAccountRequest(requestData) {
+    console.log(requestData);
+    const response = await fetch(`${DOMAIN}/accountRequests/${requestData.requestId}`, {
+        method: "GET",
+        headers: {
+            "Authorization": 'Bearer ' + requestData.token,
+            "Content-Type": "application/json",
+        },
+    });
+    const data = await response.json();
+    console.log(data);
+    if (!response.ok) {
+        console.log(data);
+        throw new Error(data.message || "Could not get Request.");
+    }
+    return data;
+}
+
 export async function createAccountRequest(requestData) {
     console.log(requestData);
     const response = await fetch(`${DOMAIN}/accountRequests`, {
@@ -38,7 +56,24 @@ export async function createAccountRequest(requestData) {
     console.log(data);
     if (!response.ok) {
         console.log(data);
-        throw new Error(data.message || "Could not create Account.");
+        throw new Error(data.message || "Could not create Account Request Right Now. Try Again Later");
+    }
+    return data;
+}
+
+export async function deleteAccountRequest(requestData) {
+    console.log(requestData);
+    const response = await fetch(`${DOMAIN}/accountRequests/${requestData.requestId}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": 'Bearer ' + requestData.token,
+            "Content-Type": "application/json",
+        },
+    });
+    const data = await response;
+    if (!response.ok) {
+        console.log(data);
+        throw new Error(data.message || "Could not delete Account Request Right Now. Try Again Later");
     }
     return data;
 }

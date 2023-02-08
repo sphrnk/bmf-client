@@ -3,7 +3,13 @@ import {createSlice} from "@reduxjs/toolkit";
 const initialState = {
     sidebarIsVisible: false,
     logoutIsVisible: false,
-    notification: null,
+    notification: {
+        open: false,
+        status: 'success',
+        message: '',
+        vertical: 'bottom',
+        horizontal: 'right',
+    },
 };
 const uiSlice = createSlice({
     name: "ui",
@@ -17,9 +23,20 @@ const uiSlice = createSlice({
         },
         showNotification(state, action) {
             state.notification = {
+                open: true,
                 status: action.payload.status,
-                title: action.payload.title,
                 message: action.payload.message,
+                vertical: 'bottom',
+                horizontal: 'right',
+            };
+        },
+        hideNotification(state) {
+            state.notification = {
+                open: false,
+                status: 'success',
+                message: '',
+                vertical: 'bottom',
+                horizontal: 'right',
             };
         },
     },
