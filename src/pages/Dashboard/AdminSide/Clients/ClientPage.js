@@ -15,8 +15,12 @@ const ClientPage = () => {
     // const [shownTab, setShownTab] = useState(`tab-${tabs[0].id}`);
     const [shownTab, setShownTab] = useState(0);
     const authCtx = useContext(AuthContext);
-    const {token} = authCtx;
-    const {clientId} = useParams();
+    const {token,user} = authCtx;
+    let {clientId} = useParams();
+    console.log(clientId)
+    if (!clientId){
+        clientId = user._id;
+    }
     const {sendRequest: getUserRequest, status: userStatus, data: userData, error: userError} = useHttp(getUser);
     let userContent;
     let panelsContent;

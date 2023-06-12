@@ -7,7 +7,7 @@ const AuthHeader = () => {
                 <Link to={'/login'}>
                 <img
                     className="object-scale-down h-10 w-46"
-                    src={process.env.PUBLIC_URL+`/images/logo/logo.png`}
+                    src={window.location.origin+`/images/logo/brand-logo.png`}
                     alt=""
                 />
                 </Link>

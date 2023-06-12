@@ -1,10 +1,9 @@
-import Layout from "../../../../Layout/Dashboard/Layout";
 import {useContext, useEffect, useState} from "react";
 import AuthContext from "../../../../store/auth-context";
 import useHttp from "../../../../hooks/use-http";
 import {getPanels, getPanelsOfUser} from "../../../../lib/api/portals";
 import LoadingSpinner from "../../../../components/UI/LoadingSpinner";
-import {Button, FormControl, FormHelperText, InputLabel, Link, MenuItem, Select, Typography} from "@mui/material";
+import {Button, FormControl, InputLabel, Link, MenuItem, Select} from "@mui/material";
 import Modal from "../../../../components/UI/Modal";
 import CreatePanelForm from "../../../../components/Forms/CreatePanelForm";
 import PanelsList from "../../../../components/PanelsList";
@@ -20,9 +19,9 @@ const PanelsPage = () => {
     const closeCreatePanelModalHandler = () => {
         setShowCreatePanelModal(false)
     }
-    const openCreatePanelModalHandler = () => {
-        setShowCreatePanelModal(true)
-    }
+    // const openCreatePanelModalHandler = () => {
+    //     setShowCreatePanelModal(true)
+    // }
     const changePanelHandler = (e) => {
         setPanelType(e.target.value)
     }

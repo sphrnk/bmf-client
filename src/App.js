@@ -92,21 +92,6 @@ function App() {
                         </Routes>
                 </Layout>
             }
-            {/*{token && user && isBusinessPortalNotCompleted &&*/}
-            {/*    <Layout>*/}
-            {/*        <Routes>*/}
-            {/*            /!*{!token && !user && (*!/*/}
-            {/*            /!*)}*!/*/}
-            {/*            <Route path={"/complete-business-portal"} element={<CompleteBusinessPortalPage/>}/>*/}
-            {/*            /!*<Route*!/*/}
-            {/*            /!*    path="*"*!/*/}
-            {/*            /!*    element={*!/*/}
-            {/*            /!*        <Navigate replace to={"/complete-business-portal"}/>*!/*/}
-            {/*            /!*    }*!/*/}
-            {/*/>*/}
-            {/*        </Routes>*/}
-            {/*    </Layout>*/}
-            {/*}*/}
             {token && user && !isIndividualPortalNotCompleted && !isBusinessPortalNotCompleted &&
 
                 <Layout>
@@ -114,9 +99,9 @@ function App() {
                         {/*{!token && !user && (*/}
                         {/*)}*/}
                         <Route path={"/dashboard"} element={<IndexPage/>}/>
-                        <Route path={"/data-table"} element={<DataTablePage/>}/>
                         <Route path={"/files"} element={<FilesPage/>}/>
                         <Route path={"/files/upload"} element={<UploadFilesPage/>}/>
+                        <Route path={"/my-profile/"} element={<ClientPage/>}/>
                         {/*<Route path={"/portals"} element={<PanelsPage/>}/>*/}
                         {/*<Route path={"/portals/add"} element={<CreatePanelPage/>}/>*/}
                         {user.role === "admin" &&

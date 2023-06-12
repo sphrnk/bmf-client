@@ -1,12 +1,10 @@
-import Layout from "../../../Layout/Dashboard/Layout";
 import useHttp from "../../../hooks/use-http";
 import {getUsers} from "../../../lib/api/users";
 import DataTable from "../../../components/DataTable/DataTable";
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect} from "react";
 import AuthContext from "../../../store/auth-context";
 import LoadingSpinner from "../../../components/UI/LoadingSpinner";
 import * as React from 'react';
-import {Link} from "react-router-dom";
 
 const cols = [
     {
@@ -40,14 +38,14 @@ const cols = [
 ]
 const DataTablePage = () => {
     const authCtx = useContext(AuthContext);
-    const {token, user} = authCtx;
+    const {token} = authCtx;
     const {sendRequest: getUsersRequest, status: usersStatus, data: usersData, error: usersError} = useHttp(getUsers);
     const users = usersData ? usersData.data.users : [];
     let usersContent;
 
     useEffect(() => {
         getUsersRequest({token})
-    }, [getUsersRequest]);
+    }, [getUsersRequest,token]);
     if (usersStatus === "pending") {
         usersContent = <LoadingSpinner/>
     }

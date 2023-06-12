@@ -6,82 +6,76 @@ import {useContext, useRef, useState} from "react";
 import UploadFileForm from "./Forms/UploadFileForm";
 import filesList from "./FilesList";
 import useHttp from "../hooks/use-http";
-import {downloadFile, uploadFile} from "../lib/api/files";
+import {downloadFile} from "../lib/api/files";
 import LoadingSpinner from "./UI/LoadingSpinner";
 import Notif from "./UI/Notif";
 import AuthContext from "../store/auth-context";
 import FirstTimeChangePasswordForm from "./Forms/FirstTimeChangePasswordForm";
+import {useDispatch, useSelector} from "react-redux";
+import {createFolder, fetchFilesData, uploadFile} from "../store/portal/portal-actions";
+import {portalActions} from "../store/portal/portal-slice";
+import UploadFile from './UploadFile'
 
 const FileExplorerActions = (props) => {
-    const paths = props.path
-
-
-    const isUpOneLevelDisabled = paths.length === 1
+    const {pathObj, uploadFilePercentage} = useSelector((state) => state.portal)
+    const showCreateFolderModal = useSelector((state) => state.portal.createFolderModal)
+    const dispatch = useDispatch();
+    console.log(uploadFilePercentage)
+    const folderNameInputRef = useRef();
+    console.log(pathObj)
+    const lastPath = pathObj[pathObj.length - 1];
+    const isUpOneLevelDisabled = lastPath.path === '/'
     console.log(props.selectedRows)
     const isRowSelected = props.selectedRows.length === 1;
-    const [selectedUser, setSelectedUser] = useState();
-    const [selectedPanel, setSelectedPanel] = useState();
-    const [panelType, setPanelType] = useState();
-    const [fileList, setFileList] = useState([]);
-    const [uploadFileModal, setShowUploadFileModal] = useState(false);
     const authCtx = useContext(AuthContext);
-    const {token} = authCtx
-    const {
-        sendRequest: uploadFilesRequest,
-        status: uploadFileStatus,
-        data: uploadFileData,
-        error: uploadFileError
-    } = useHttp(uploadFile);
-    let reqStatus;
-    if (uploadFileStatus === "pending") {
-        reqStatus = <LoadingSpinner/>
+    const {user, token} = authCtx
+    const {_id: userId} = user;
+    const uploadFileHandler = (files) => {
+        console.log(files);
+        dispatch(uploadFile({
+            userId,
+            token,
+            files,
+            pathObj
+        }))
     }
-    if (uploadFileStatus === "completed" && uploadFileData) {
-        // console.log(uploadFileData);
-        reqStatus = <Notif status={"success"}
-                           text={"Account Created Successfully, if the email is correct user will get his information!"}/>
+
+    const openCreateFolderModal = () => {
+        dispatch(portalActions.showCreateFolderModal())
     }
-    if (uploadFileStatus === "completed" && uploadFileError) {
-        reqStatus = <Notif status={"fail"} text={uploadFileError}/>
+    const closeCreateFolderModal = () => {
+        dispatch(portalActions.hideCreateFolderModal())
     }
-    const closeFileUploadModalHandler = () => {
-        setShowUploadFileModal(false)
+    const createFolderHandler = () => {
+        const folderName = folderNameInputRef.current.value;
+        dispatch(createFolder({token, userId: user._id, pathObj, folderName}));
+        // await createFolderRequest({token, userId: user._id, fullPath, folderName})
     }
-    const openFileUploadModalHandler = () => {
-        setShowUploadFileModal(true)
-    }
-    const changeFileHandler = (files) => {
-        setFileList(files);
-    }
-    const changePanelHandler = (panel) => {
-        console.log(panel)
-        setSelectedPanel(panel.panel);
-        setPanelType(panel.panelType);
-    }
-    const changeUserHandler = (user) => {
-        setSelectedUser(user)
-    }
-    const uploadFileHandler = async () => {
-        await uploadFilesRequest({fileList, userId: selectedUser, selectedPanel, panelType, token, paths})
-    }
+
     const actionHandler = async (action, id) => {
-        if (action === 'up-one-level' && !isUpOneLevelDisabled)
-            props.onFilesAction("up-one-level")
+        if (action === 'up-one-level' && !isUpOneLevelDisabled) {
+            // console.log(pathObj)
+            // pathObj.pop();
+            dispatch(portalActions.upOneLevel())
+        }
+        if (action === 'home' && !isUpOneLevelDisabled) {
+            // console.log(pathObj)
+            // pathObj.pop();
+            dispatch(portalActions.homePage())
+        }
+
         if (action === "delete" && isRowSelected) {
             props.onFilesAction("delete")
         }
         if (action === "download" && isRowSelected) {
-            await downloadFile({
-                path: paths[paths.length - 1].path + props.selectedRows[0].name,
-                fileName: props.selectedRows[0].name, token
-            })
+            // await downloadFile({
+            //     path: paths[paths.length - 1].path + props.selectedRows[0].name,
+            //     fileName: props.selectedRows[0].name, token
+            // })
         }
-        if (action === "create-folder") {
 
-            props.onFilesAction('create-folder')
-        }
         if (action === "reload") {
-            props.onFilesAction("reload")
+            dispatch(fetchFilesData({token, userId: user._id, path: lastPath.path}))
         }
 
         if (action === "breedCrumb") {
@@ -89,12 +83,11 @@ const FileExplorerActions = (props) => {
         }
     }
 
-    console.log(paths);
     return (
         <>
             <div className={'flex gap-6 mb-6 items-center justify-between'}>
                 <Breadcrumbs aria-label="breadcrumb">
-                    {paths.map((path, i, arr) => {
+                    {pathObj.map((path, i, arr) => {
                             if (arr.length - 1 === i) {
                                 return <Typography key={i} color="text.primary">{path.name}</Typography>
                             } else {
@@ -106,13 +99,14 @@ const FileExplorerActions = (props) => {
                         }
                     )}
                 </Breadcrumbs>
-                <Link component={RouterLink} to={'/files/upload'} state={paths} underline={"none"}>
-                    <Button variant="contained" component="label"
-                            startIcon={<i className="far fa-file-import me-2"></i>}>
-                        Upload Files
-                        {/*<input hidden accept="image/*" multiple type="file"/>*/}
-                    </Button>
-                </Link>
+                {/*<Link component={RouterLink} to={'/files/upload'} state={pathObj} underline={"none"}>*/}
+                {/*<Button onClick={uploadFileButtonHandler} variant="contained" component="label"*/}
+                {/*        startIcon={<i className="far fa-file-import me-2"></i>}>*/}
+                {/*    Upload Files*/}
+                {/*</Button>*/}
+                {/*<input ref={fileInputRef} hidden accept="image/*,.pdf" type="file"/>*/}
+                {/*</Link>*/}
+                <UploadFile onUpload={uploadFileHandler}/>
             </div>
             <nav className={'flex justify-between items-center  mb-6'}>
                 <div className={'flex gap-6 items-center'}>
@@ -129,21 +123,29 @@ const FileExplorerActions = (props) => {
                           className="fa-sync-alt cursor-pointer"/>
                 </div>
                 <div className={'flex gap-6 items-center'}>
-                    <Icon onClick={actionHandler.bind(null, 'create-folder')}
+                    <Icon onClick={openCreateFolderModal}
                           sx={{color: 'primary.dark'}}
                           baseClassName="far"
                           className={"fa-folder-plus cursor-pointer"}/>
-                    <Icon onClick={actionHandler.bind(null, 'download')}
-                          sx={{color: isRowSelected ? 'primary.dark' : 'primary.light'}}
-                          baseClassName="far"
-                          className={isRowSelected ? "fa-cloud-download cursor-pointer" : "fa-cloud-download cursor-not-allowed opacity-50"}/>
-                    <Icon onClick={actionHandler.bind(null, 'delete')}
-                          sx={{color: isRowSelected ? 'primary.dark' : 'primary.light'}}
-                          baseClassName="far"
-                          className={isRowSelected ? "fa-trash-alt cursor-pointer" : "fa-trash-alt cursor-not-allowed opacity-50"}/>
+                    {/*<Icon onClick={actionHandler.bind(null, 'download')}*/}
+                    {/*      sx={{color: isRowSelected ? 'primary.dark' : 'primary.light'}}*/}
+                    {/*      baseClassName="far"*/}
+                    {/*      className={isRowSelected ? "fa-cloud-download cursor-pointer" : "fa-cloud-download cursor-not-allowed opacity-50"}/>*/}
+                    {/*<Icon onClick={actionHandler.bind(null, 'delete')}*/}
+                    {/*      sx={{color: isRowSelected ? 'primary.dark' : 'primary.light'}}*/}
+                    {/*      baseClassName="far"*/}
+                    {/*      className={isRowSelected ? "fa-trash-alt cursor-pointer" : "fa-trash-alt cursor-not-allowed opacity-50"}/>*/}
                 </div>
-
             </nav>
+            <Modal title={'Create Folder'}
+                   open={showCreateFolderModal}>
+                {/*<FirstTimeChangePasswordForm onConfirm={closeChangePasswordModalHandler}/>*/}
+                <TextField inputRef={folderNameInputRef} label="Folder Name" variant="outlined"/>
+                <div className={"flex justify-end items-center mt-4"}>
+                    <Button variant={'text'} onClick={closeCreateFolderModal}>Cancel</Button>
+                    <Button onClick={createFolderHandler} variant={'contained'}>Create Folder</Button>
+                </div>
+            </Modal>
         </>
     )
 }

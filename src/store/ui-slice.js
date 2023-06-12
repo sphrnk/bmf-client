@@ -10,6 +10,7 @@ const initialState = {
         vertical: 'bottom',
         horizontal: 'right',
     },
+    spinnerLoading: false,
 };
 const uiSlice = createSlice({
     name: "ui",
@@ -29,6 +30,9 @@ const uiSlice = createSlice({
                 vertical: 'bottom',
                 horizontal: 'right',
             };
+        },
+        showSpinnerLoading(state) {
+            state.spinnerLoading = true;
         },
         hideNotification(state) {
             state.notification = {

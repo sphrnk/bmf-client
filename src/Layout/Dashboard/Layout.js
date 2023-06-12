@@ -15,6 +15,7 @@ import AuthHeader from "../Auth/AuthHeader";
 import {Link, useLocation} from "react-router-dom";
 import Notif from "../../components/UI/Notif";
 import {uiActions} from "../../store/ui-slice";
+import {Box, LinearProgress} from "@mui/material";
 
 
 const Layout = (props) => {
@@ -22,6 +23,7 @@ const Layout = (props) => {
     const {token, user} = authCtx;
     const [changePasswordModal, setShowChangePasswordModal] = useState(authCtx.user.firstTimeLogin);
     const {sidebarIsVisible: isSidebarShown, logoutIsVisible: isUserActionsShown} = useSelector((state) => state.ui);
+    const {isUploading, uploadFilePercentage} = useSelector((state) => state.portal);
     const mainClasses = `${user ? isSidebarShown ? "ml-28 md:ml-0 " : "ml-0 md:ml-28 " : ''
     } w-full h-full transition-all`;
     const closeChangePasswordModalHandler = () => {
@@ -47,6 +49,18 @@ const Layout = (props) => {
                 </main>
             </>}
             <Notif/>
+            {isUploading &&
+                <Box sx={{
+                    position: 'fixed',
+                    right: 0,
+                    width: '40%',
+                    backgroundColor: 'white',
+                    borderRadius: 2,
+                    boxShadow: 1,
+                }} p={3}>
+                    <LinearProgress variant="determinate" value={uploadFilePercentage}/>
+                </Box>
+            }
             {/*<Footer/>*/}
         </>
     );

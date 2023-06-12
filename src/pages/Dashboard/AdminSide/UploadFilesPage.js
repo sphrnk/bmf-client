@@ -1,19 +1,8 @@
 import UploadFileForm from "../../../components/Forms/UploadFileForm";
 import {useState, useEffect, useContext} from "react";
-import {
-    Breadcrumbs,
-    Button,
-    Link,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon, ListItemText,
-    Paper,
-    Typography
-} from "@mui/material";
-import LoadingSpinner from "../../../components/UI/LoadingSpinner";
+import {Button, Link} from "@mui/material";
 import useHttp from "../../../hooks/use-http";
-import {getFiles, uploadFile} from "../../../lib/api/files";
+import {uploadFile} from "../../../lib/api/files";
 import AuthContext from "../../../store/auth-context";
 import {Link as RouterLink, useLocation, useNavigate} from "react-router-dom";
 import {uiActions} from "../../../store/ui-slice";
@@ -29,9 +18,7 @@ const UploadFilesPage = (props) => {
     const {_id: userId} = user;
     const {
         sendRequest: uploadFilesRequest,
-        status: uploadFileStatus,
         data: uploadFileData,
-        error: uploadFileError
     } = useHttp(uploadFile);
     const changeFileHandler = (files) => {
         setFileList(files);

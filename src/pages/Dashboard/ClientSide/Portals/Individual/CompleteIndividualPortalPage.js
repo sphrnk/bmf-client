@@ -1,8 +1,6 @@
-import {Button, Typography} from "@mui/material";
+import {Typography} from "@mui/material";
 import IndividualPortal from "../../../../../components/Portal/IndividualPortal";
-import Address from "../../../../../components/Portal/Address";
 import {useDispatch} from "react-redux";
-import {useNavigate} from "react-router-dom";
 import useHttp from "../../../../../hooks/use-http";
 import {createPanel} from "../../../../../lib/api/portals";
 import {useContext, useEffect} from "react";
@@ -15,7 +13,6 @@ const IndividualPortalPage = () => {
     const authCtx = useContext(AuthContext);
     const {token} = authCtx;
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const {sendRequest, status, data, error} = useHttp(createPanel);
     const createPanelRequest = async (data) => {
         console.log(data)

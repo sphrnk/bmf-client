@@ -1,5 +1,4 @@
 import {Button, Typography} from "@mui/material";
-import IndividualPortal from "../../../../../components/Portal/IndividualPortal";
 import Address from "../../../../../components/Portal/Address";
 import BusinessPortal from "../../../../../components/Portal/BusinessPortal";
 

@@ -4,8 +4,6 @@ import {useSelector} from "react-redux";
 import AuthContext from "../../store/auth-context"
 import {Link, useLocation} from "react-router-dom";
 import Notif from "../../components/UI/Notif";
-
-
 const AuthLayout = (props) => {
     const location = useLocation();
     const [currentPath, setCurrentPath] = useState();

@@ -1,9 +1,10 @@
 import {Tab, Tabs, Typography} from "@mui/material";
 import Box from "@mui/material/Box";
-import {useState} from "react";
+import {useState, useContext} from "react";
 import PropTypes from "prop-types";
 import UserIndividualPanels from "./UserIndividualPanels";
 import UserBusinessPanels from "./UserBusinessPanels";
+import AuthContext from "../../store/auth-context";
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -35,6 +36,8 @@ function a11yProps(index) {
 
 const UsersPanels = (props) => {
     const [shownTab, setShownTab] = useState(0);
+    const authCtx = useContext(AuthContext);
+    const {token, user} = authCtx;
     console.log(props);
     let individualPanels;
     let businessPanels;
@@ -46,25 +49,42 @@ const UsersPanels = (props) => {
             <UserIndividualPanels panels={props.individualPanels}/>
         </TabPanel>
     } else {
-
-        individualPanels =
-            <TabPanel value={shownTab} index={0}>
-                <Typography className={"col-span-12"} variant={"h6"} component={"h6"}>
-                    There isn't any individual portals, contact to user to complete his info.</Typography>
-            </TabPanel>
+        if (user.role !== "client") {
+            individualPanels =
+                <TabPanel value={shownTab} index={0}>
+                    <Typography className={"col-span-12"} variant={"h6"} component={"h6"}>
+                        There isn't any individual portals, contact to user to complete his info.</Typography>
+                </TabPanel>
+        } else {
+            individualPanels =
+                <TabPanel value={shownTab} index={0}>
+                    <Typography className={"col-span-12"} variant={"h6"} component={"h6"}>
+                        There isn't any individual portals</Typography>
+                </TabPanel>
+        }
     }
     if (props.businessPanels.length !== 0) {
         businessPanels = (<TabPanel value={shownTab} index={1}>
             <UserBusinessPanels panels={props.businessPanels}/>
         </TabPanel>)
     } else {
-        businessPanels =
-            <TabPanel value={shownTab} index={1}>
-                <Typography className={"col-span-full"} variant={"h6"} component={"h6"}>
-                    There isn't any business portals, contact to user to complete his info.</Typography>
-            </TabPanel>
+        if (user.role !== "client")
+            businessPanels =
+                <TabPanel value={shownTab} index={1}>
+                    <Typography className={"col-span-full"} variant={"h6"} component={"h6"}>
+                        There isn't any business portals, contact to user to complete his info.</Typography>
+                </TabPanel>
+        else {
+            businessPanels =
+                <TabPanel value={shownTab} index={1}>
+                    <Typography className={"col-span-full"} variant={"h6"} component={"h6"}>
+                        There isn't any business portals</Typography>
+                </TabPanel>
+        }
     }
-    {console.log(props.businessPanels)}
+    {
+        console.log(props.businessPanels)
+    }
     return (<>
             <Tabs
                 value={shownTab}
@@ -72,13 +92,13 @@ const UsersPanels = (props) => {
                 aria-label="Panel type tabs"
             >
                 {/*{props.indiviualPortal &&*/}
-                    <Tab icon={<i className={`fa-duotone fa-user-tie`}></i>} iconPosition="start"
-                         label="Individual"/>
+                <Tab icon={<i className={`fa-duotone fa-user-tie`}></i>} iconPosition="start"
+                     label="Individual"/>
                 // }
 
                 {/*{props.businessPortal &&*/}
-                    <Tab icon={<i className={`fa-duotone fa-briefcase`}></i>} iconPosition="start"
-                    label="Business"/>
+                <Tab icon={<i className={`fa-duotone fa-briefcase`}></i>} iconPosition="start"
+                     label="Business"/>
                 {/*}*/}
             </Tabs>
             {individualPanels}

@@ -1,10 +1,8 @@
-import Layout from "../../../Layout/Dashboard/Layout";
 import {useContext, useEffect} from "react";
 import AuthContext from "../../../store/auth-context";
 import {Link} from "react-router-dom";
 import useHttp from "../../../hooks/use-http";
 import {getFiles} from "../../../lib/api/files";
-import {getPanels} from "../../../lib/api/portals";
 import {getUsers} from "../../../lib/api/users";
 import LoadingSpinner from "../../../components/UI/LoadingSpinner";
 import {getAccountRequests} from "../../../lib/api/accountRequests";
@@ -13,7 +11,6 @@ const IndexPage = () => {
     const authCtx = useContext(AuthContext);
     const {token} = authCtx;
     const {user} = authCtx;
-    const today = new Date();
     const {
         sendRequest: getUsersRequest,
         status: usersStatus,
@@ -136,7 +133,7 @@ const IndexPage = () => {
         if (!accountRequestsData && !accountRequestsError) {
             getAccountRequestsRequest({token});
         }
-    }, [getUsersRequest, getFilesRequest, getAccountRequestsRequest, token])
+    }, [getUsersRequest, getFilesRequest, getAccountRequestsRequest, token, accountRequestsData,accountRequestsError,filesData, filesError,usersData,usersError])
     return (
         <>
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">

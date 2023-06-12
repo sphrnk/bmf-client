@@ -28,6 +28,16 @@ const Sidebar = (props) => {
                         <span>Home</span>
                     </NavLink>
                 </li>
+                <li>
+                    <NavLink
+                        to="/my-profile"
+                        className={(navData) => navData.isActive ? "active text-center px-3 py-2 flex flex-col items-center w-full gap-1 text-white" : "text-center px-3 py-2 flex flex-col items-center w-full gap-1 text-white"}>
+                        <div className="glassmorphic rounded-3xl px-4 py-0.5">
+                            <i className="fa-regular fa-user"></i>
+                        </div>
+                        <span>Profile</span>
+                    </NavLink>
+                </li>
                 {/*<li>*/}
                 {/*  <Link*/}
                 {/*    to=""*/}
@@ -42,6 +52,7 @@ const Sidebar = (props) => {
                 {/*    <span>Chat</span>*/}
                 {/*  </Link>*/}
                 {/*</li>*/}
+
                 <li>
                     <NavLink
                         to="/files"
