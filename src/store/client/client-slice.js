@@ -14,8 +14,13 @@ const clientSlice = createSlice({
         createClient(state, action) {
 
         },
-        removeClient(state, action) {
-
+        deleteClient(state, action) {
+            const id = action.payload;
+            console.log(id);
+            const existingItem = state.clients.find((client) => client._id === id);
+            if (existingItem) {
+                state.clients = state.clients.filter((client) => client._id !== id);
+            }
         },
         updateClient(state, action) {
 

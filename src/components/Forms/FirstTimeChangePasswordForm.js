@@ -1,30 +1,31 @@
 import useHttp from "../../hooks/use-http";
 import {useRef, useContext} from "react";
-import {updatePassword} from "../../lib/api/auth";
+import {updateTempPassword} from "../../lib/api/auth";
 import LoadingSpinner from "../UI/LoadingSpinner";
 import Notif from "../UI/Notif";
 import AuthContext from "../../store/auth-context";
 import {Button, TextField} from "@mui/material";
 
 const FirstTimeChangePasswordForm = (props) => {
-    const {sendRequest, status, data, error} = useHttp(updatePassword);
+    const {sendRequest, status, data, error} = useHttp(updateTempPassword);
     let reqStatus;
     const authCtx = useContext(AuthContext);
     const {token} = authCtx;
     const passwordInputRef = useRef();
-    // const confirmPasswordInputRef = useRef();
+    const confirmPasswordInputRef = useRef();
     const changePasswordHandler = async (el) => {
         el.preventDefault();
         const enteredPassword = passwordInputRef.current.value;
-        // const enteredConfirmPassword = confirmPasswordInputRef.current.value;
-        // if (enteredPassword === enteredConfirmPassword) {
-        await sendRequest({
-            password: enteredPassword,
-            token,
-        });
-        // }else{
-        //     reqStatus = <Notif status={"fail"} text={"passwords are not the same"}/>
-        // }
+        const enteredConfirmPassword = confirmPasswordInputRef.current.value;
+        if (enteredPassword === enteredConfirmPassword) {
+            console.log(enteredPassword);
+            await sendRequest({
+                password: enteredPassword,
+                token,
+            });
+        } else {
+            reqStatus = <Notif status={"fail"} text={"passwords are not the same"}/>
+        }
     };
     if (status === "pending") {
         reqStatus = <LoadingSpinner/>
@@ -59,15 +60,14 @@ const FirstTimeChangePasswordForm = (props) => {
                     type={"password"}
                     inputRef={passwordInputRef}
                 />
-                {/*<TextField*/}
-                {/*    label="Confirm Password"*/}
-                {/*    required*/}
-                {/*    // inputRef={firstNameInputRef}*/}
-                {/*    name={'confirm-password'}*/}
-                {/*    type={"password"}*/}
-                {/*    inputRef={confirmPasswordInputRef}*/}
-                {/*/>*/}
-                {/*<small className="text-red-600">*some error*</small>*/}
+                <TextField
+                    label="Confirm Password"
+                    required
+                    // inputRef={firstNameInputRef}
+                    name={'confirm-password'}
+                    type={"password"}
+                    inputRef={confirmPasswordInputRef}
+                />
             </div>
         </div>
         {reqStatus}

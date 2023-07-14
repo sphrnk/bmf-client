@@ -1,7 +1,7 @@
 import {createSlice} from "@reduxjs/toolkit";
 
 const initialState = {
-    sidebarIsVisible: false,
+    sidebarState: false,
     logoutIsVisible: false,
     notification: {
         open: false,
@@ -16,6 +16,12 @@ const uiSlice = createSlice({
     name: "ui",
     initialState,
     reducers: {
+        showSidebar(state) {
+            state.sidebarState = true;
+        },
+        hideSidebar(state) {
+            state.sidebarState = false;
+        },
         toggle(state) {
             state.sidebarIsVisible = !state.sidebarIsVisible;
         },

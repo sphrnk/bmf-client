@@ -19,7 +19,7 @@ let theme = createTheme({
             dark: "#352a1b",
         }
     },
-    // shadows: Array(25).fill('none'),
+    shadows: Array(25).fill('none'),
     // typography: {
     //
     // }

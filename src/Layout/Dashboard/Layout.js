@@ -15,38 +15,77 @@ import AuthHeader from "../Auth/AuthHeader";
 import {Link, useLocation} from "react-router-dom";
 import Notif from "../../components/UI/Notif";
 import {uiActions} from "../../store/ui-slice";
-import {Box, LinearProgress} from "@mui/material";
+import {
+    Box,
+    Drawer,
+    IconButton,
+    LinearProgress,
+    styled,
+    useTheme,
+    Divider, List, ListItem, ListItemButton, ListItemIcon
+} from "@mui/material";
 
+
+const drawerWidth = 240;
+const Main = styled('main', {shouldForwardProp: (prop) => prop !== 'open'})(
+    ({theme, sidebarState}) => (
+        {
+            flexGrow: 1,
+            padding: theme.spacing(3),
+            transition: theme.transitions.create('margin', {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.leavingScreen,
+            }),
+            marginLeft: 0,
+            ...(sidebarState && {
+                transition: theme.transitions.create('margin', {
+                    easing: theme.transitions.easing.easeOut,
+                    duration: theme.transitions.duration.enteringScreen,
+                }),
+                marginLeft: `${drawerWidth}px`,
+            }),
+        }),
+);
+
+
+const DrawerHeader = styled('div')(({theme}) => ({
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    justifyContent: 'flex-end',
+}));
 
 const Layout = (props) => {
     const authCtx = useContext(AuthContext);
     const {token, user} = authCtx;
-    const [changePasswordModal, setShowChangePasswordModal] = useState(authCtx.user.firstTimeLogin);
-    const {sidebarIsVisible: isSidebarShown, logoutIsVisible: isUserActionsShown} = useSelector((state) => state.ui);
+    const {sidebarState} = useSelector((state) => state.ui);
     const {isUploading, uploadFilePercentage} = useSelector((state) => state.portal);
-    const mainClasses = `${user ? isSidebarShown ? "ml-28 md:ml-0 " : "ml-0 md:ml-28 " : ''
-    } w-full h-full transition-all`;
-    const closeChangePasswordModalHandler = () => {
-        setShowChangePasswordModal(false);
+    const [changeTempPassword, setChangeTempPasswordSate] = useState(authCtx.user.tempPasswordNotChanged);
+    const changePasswordStateHandler = () => {
+        setChangeTempPasswordSate(false);
     }
     return (
-        <>
-            {authCtx.user.firstTimeLogin && changePasswordModal &&
+        <Box sx={{display: 'flex'}}>
+            <Header/>
+            {/*{!user.tempPasswordNotChanged &&*/}
+            {authCtx.user.tempPasswordNotChanged && changeTempPassword &&
                 <Modal title={'Change Password'}
-                       open={changePasswordModal}>
-                    <FirstTimeChangePasswordForm onConfirm={closeChangePasswordModalHandler}/>
+                       open={changeTempPassword}>
+                    <FirstTimeChangePasswordForm onConfirm={changePasswordStateHandler}/>
                 </Modal>}
-            {!authCtx.user.firstTimeLogin && <>
-                <Header/>
-                <Sidebar isShown={isSidebarShown}/>
-                {isUserActionsShown && user && token && <UserActions isSidebarShown={isSidebarShown}/>}
-                <main className="flex">
-                    <div className={mainClasses}>
-                        <div className="container mx-auto py-5 px-4">
-                            {props.children}
-                        </div>
+            {!authCtx.user.tempPasswordNotChanged && <>
+                <Sidebar/>
+                {/*{isUserActionsShown && user && token && <UserActions isSidebarShown={isSidebarShown}/>}*/}
+                <Box component="main" sx={{flexGrow: 1, p: 3}}>
+                    <DrawerHeader/>
+                    {/*<div className={mainClasses}>*/}
+                    <div className="container mx-auto py-5 px-4">
+                        {props.children}
+                        {/*</div>*/}
                     </div>
-                </main>
+                </Box>
             </>}
             <Notif/>
             {isUploading &&
@@ -62,7 +101,7 @@ const Layout = (props) => {
                 </Box>
             }
             {/*<Footer/>*/}
-        </>
+        </Box>
     );
 };
 

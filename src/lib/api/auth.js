@@ -46,6 +46,30 @@ export async function updatePassword(requestData) {
 
     return data;
 }
+export async function updateTempPassword(requestData) {
+    const response = await fetch(`${DOMAIN}/users/updateTempPassword`, {
+        method: "PATCH",
+        body: JSON.stringify({
+            password: requestData.password,
+            passwordConfirm: requestData.password,
+        }),
+        headers: {
+            "Authorization": 'Bearer ' + requestData.token,
+            "Content-Type": "application/json",
+        },
+
+
+    });
+    const data = await response.json();
+    console.log(data);
+    if (!response.ok) {
+        // const error = await response.json();
+        console.log(response);
+        throw new Error(data.message || "Could not update the password.");
+    }
+
+    return data;
+}
 
 export async function forgotPassword(requestData) {
     const response = await fetch(`${DOMAIN}/users/forgotPassword`, {

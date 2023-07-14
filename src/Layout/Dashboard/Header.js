@@ -3,11 +3,33 @@ import AuthContext from "../../store/auth-context";
 import {Link} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {uiActions} from "../../store/ui-slice";
-import {Avatar, ListItemIcon, Menu, MenuItem} from "@mui/material";
+import {AppBar, IconButton, ListItemIcon, Menu, MenuItem, styled, Toolbar, Typography} from "@mui/material";
+
+const drawerWidth = 240;
+const MuiAppBar = styled(AppBar, {
+    shouldForwardProp: (prop) => prop !== 'open',
+})(({theme, sidebarState}) => ({
+    background: '#fff',
+    color: theme.palette.primary.main,
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['width', 'margin'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+    }),
+    ...(sidebarState && {
+        marginLeft: drawerWidth,
+        width: `calc(100% - ${drawerWidth}px)`,
+        transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    }),
+}));
 
 const Header = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+    const {sidebarState} = useSelector((state) => state.ui);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -15,28 +37,41 @@ const Header = () => {
         setAnchorEl(null);
     };
     const dispatch = useDispatch();
-    const toggleSidebarHandler = () => {
-        dispatch(uiActions.toggle());
+    const handleDrawerOpen = () => {
+        dispatch(uiActions.showSidebar());
     };
     const authCtx = useContext(AuthContext);
     const logoutHandler = () => {
         authCtx.logout();
     }
+
+
     return (
-        <header className="h-20 py-4 px-3 z-10 sticky top-0 border-b bg-white">
-            <div className="flex mx-auto justify-between items-center">
-                <div className="bg-white flex justify-center w-20 mx-0.5" onClick={toggleSidebarHandler}>
-                    <i className="fa-regular fa-bars text-2xl"></i>
+        <MuiAppBar position="fixed" sidebarState={sidebarState}>
+            <Toolbar className={"justify-between"}>
+                <div className={"items-center flex"}>
+                    <IconButton
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={handleDrawerOpen}
+                        edge="start"
+                        sx={{mr: 2, ...(open && {display: 'none'})}}
+                    >
+                        <i className="fa-regular fa-bars text-2xl"></i>
+                    </IconButton>
+                    <Typography variant="h6" noWrap component="div">
+                        BMF Accounting Solutions
+                    </Typography>
                 </div>
                 <img
-                    className="object-scale-down h-10 w-46"
+                    className="object-scale-down "
                     src={process.env.PUBLIC_URL + `/images/logo/logo.png`}
                     alt=""
                 />
                 <div aria-controls={open ? 'account-menu' : undefined}
                      aria-haspopup="true"
                      aria-expanded={open ? 'true' : undefined} onClick={handleClick}
-                     className="flex items-center rounded-full cursor-pointer w-12 h-12 border-primary border-2 overflow-hidden">
+                     className="flex items-center rounded-full cursor-pointer w-12 h-12 border-neutral-800 border-2 overflow-hidden">
                     <img
                         src={process.env.PUBLIC_URL + `/images/default-profile.png`}
                         className="object-fill"
@@ -86,8 +121,8 @@ const Header = () => {
                         Logout
                     </MenuItem>
                 </Menu>
-            </div>
-        </header>
+            </Toolbar>
+        </MuiAppBar>
     );
 };
 

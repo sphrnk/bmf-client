@@ -29,11 +29,7 @@ const FilesPage = () => {
     const lastPath = pathObj[pathObj.length - 1];
     console.log(lastPath)
     useEffect(() => {
-        // if (lastPath.path === '/') {
-        dispatch(fetchClientsData({token}));
-        // } else {
         dispatch(fetchFilesData({token, userId: user._id, path: lastPath.path}));
-        // }
         console.log("done")
     }, [token, pathObj, user]);
 

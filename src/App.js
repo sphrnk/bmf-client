@@ -25,6 +25,9 @@ import BusinessPortalPage from "./pages/Dashboard/ClientSide/Portals/Business/Bu
 import CompleteIndividualPortalPage from "./pages/Dashboard/ClientSide/Portals/Individual/CompleteIndividualPortalPage";
 import CompleteBusinessPortalPage from "./pages/Dashboard/ClientSide/Portals/Business/CompleteBusinessPortalPage";
 import UploadFilesPage from "./pages/Dashboard/AdminSide/UploadFilesPage";
+import TempPasswordPage from "./pages/Dashboard/AdminSide/TempPasswordPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import ProfilePage from "./pages/Dashboard/AdminSide/ProfilePage";
 
 function App() {
     const authCtx = useContext(AuthContext);
@@ -39,6 +42,7 @@ function App() {
             {!token && !user &&
                 <AuthLayout>
                     <Routes>
+                        <Route path={"/404"} element={<NotFoundPage/>}/>
                         <Route path={"/login"} element={<LoginPage/>}/>
                         <Route path={"/forgot-password"} element={<ForgotPasswordPage/>}/>
                         <Route path={"/resetPassword/:token"} element={<ResetPasswordPage/>}/>
@@ -52,75 +56,77 @@ function App() {
                     </Routes>
                 </AuthLayout>
             }
-            {token && user && isBusinessPortalNotCompleted && !isIndividualPortalNotCompleted &&
+            {token && user &&
                 <Layout>
                     <Routes>
-                        <Route path={"/complete-business-portal"} element={<CompleteBusinessPortalPage/>}/>
-                        <Route
-                            path="*"
-                            element={
-                                <Navigate replace to={"/complete-business-portal"}/>
-                            }
-                        />
-                    </Routes>
-                </Layout>
-            }
-            {token && user && !isBusinessPortalNotCompleted && isIndividualPortalNotCompleted &&
-                <Layout>
-                    <Routes>
-                        <Route path={"/complete-individual-portal"} element={<CompleteIndividualPortalPage/>}/>
-                        <Route
-                            path="*"
-                            element={
-                                <Navigate replace to={"/complete-individual-portal"}/>
-                            }
-                        />
-                    </Routes>
-                </Layout>
-            }
-            {token && user && (isBusinessPortalNotCompleted && isIndividualPortalNotCompleted) &&
-                <Layout>
-                        <Routes>
-                            <Route path={"/complete-individual-portal"} element={<CompleteIndividualPortalPage/>}/>
-                            <Route path={"/complete-business-portal"} element={<CompleteBusinessPortalPage/>}/>
-                            <Route
-                                path="*"
-                                element={
-                                    <Navigate replace to={"/complete-individual-portal"}/>
-                                }
-                            />
-                        </Routes>
-                </Layout>
-            }
-            {token && user && !isIndividualPortalNotCompleted && !isBusinessPortalNotCompleted &&
-
-                <Layout>
-                    <Routes>
-                        {/*{!token && !user && (*/}
-                        {/*)}*/}
-                        <Route path={"/dashboard"} element={<IndexPage/>}/>
-                        <Route path={"/files"} element={<FilesPage/>}/>
-                        <Route path={"/files/upload"} element={<UploadFilesPage/>}/>
-                        <Route path={"/my-profile/"} element={<ClientPage/>}/>
-                        {/*<Route path={"/portals"} element={<PanelsPage/>}/>*/}
-                        {/*<Route path={"/portals/add"} element={<CreatePanelPage/>}/>*/}
-                        {user.role === "admin" &&
+                        {isBusinessPortalNotCompleted && !isIndividualPortalNotCompleted &&
                             <>
-                                <Route path={"/clients"} element={<ClientsPage/>}/>
-                                <Route path={"/clients/add"} element={<CreateClientPage/>}/>
-                                <Route path={"/clients/:clientId"} element={<ClientPage/>}/>
-                                <Route path={"/account-requests"} element={<AccountRequestsPage/>}/>
-                                <Route path={"/account-requests/:requestId"} element={<AccountRequestPage/>}/>
+                                <Route path={"/complete-business-portal"} element={<CompleteBusinessPortalPage/>}/>
+                                <Route
+                                    path="/"
+                                    element={
+                                        <Navigate replace to={"/complete-business-portal"}/>
+                                    }
+                                />
                             </>
                         }
+                        {!isBusinessPortalNotCompleted && isIndividualPortalNotCompleted &&
+                            <>
+                                <Route path={"/complete-individual-portal"} element={<CompleteIndividualPortalPage/>}/>
+                                <Route
+                                    path="/"
+                                    element={
+                                        <Navigate replace to={"/complete-individual-portal"}/>
+                                    }
+                                />
+                            </>
+                        }
+                        {(isBusinessPortalNotCompleted && isIndividualPortalNotCompleted) &&
+                            <>
+                                <Route path={"/complete-individual-portal"}
+                                       element={<CompleteIndividualPortalPage/>}/>
+                                <Route path={"/complete-business-portal"} element={<CompleteBusinessPortalPage/>}/>
+                                <Route
+                                    path="/"
+                                    element={
+                                        <Navigate replace to={"/complete-individual-portal"}/>
+                                    }
+                                />
+                            </>
+                        }
+                        {!isIndividualPortalNotCompleted && !isBusinessPortalNotCompleted &&
+                            <>
+                                <Route path={"/dashboard"} element={<IndexPage/>}/>
+                                <Route path={"/portals"} element={<FilesPage/>}/>
+                                <Route path={"/portals/upload"} element={<UploadFilesPage/>}/>
+                                <Route path={"/profile"} element={<ProfilePage/>}/>
+                                {/*<Route path={"/portals"} element={<PanelsPage/>}/>*/}
+                                {/*<Route path={"/portals/add"} element={<CreatePanelPage/>}/>*/}
+                                {user.role === "admin" &&
+                                    <>
+                                        <Route path={"/clients"} element={<ClientsPage/>}/>
+                                        <Route path={"/clients/add"} element={<CreateClientPage/>}/>
+                                        <Route path={"/clients/:clientId"} element={<ClientPage/>}/>
+                                        <Route path={"/account-requests"} element={<AccountRequestsPage/>}/>
+                                        <Route path={"/account-requests/:requestId"}
+                                               element={<AccountRequestPage/>}/>
+                                    </>
+                                }
+                                <Route
+                                    path="/"
+                                    element={
+                                        <Navigate replace to={"/dashboard"}/>
+                                    }
+                                />
+                            </>}
+                        <Route path={"/404"} element={<NotFoundPage/>}/>
                         <Route
                             path="*"
                             element={
-                                <Navigate replace to={"/dashboard"}/>
+                                <Navigate replace to={"/404"}/>
                             }
                         />
                     </Routes>
-
                 </Layout>
             }
         </>
