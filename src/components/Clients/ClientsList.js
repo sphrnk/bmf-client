@@ -1,7 +1,7 @@
 import {Link} from "react-router-dom";
 import {DataGrid} from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
-import {Icon, ListItemIcon, ListItemText, Menu, MenuItem} from "@mui/material";
+import {Button, Icon, ListItemIcon, ListItemText, Menu, MenuItem} from "@mui/material";
 import {useMemo, useContext, useState} from "react";
 import {deleteClient, resendEmail} from "../../store/client/client-actions";
 import {useDispatch} from "react-redux";
@@ -20,8 +20,8 @@ const ClientsList = (props) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    // const resendEmail = ;
-    const columns = useMemo(() => [
+    console.log(props.clients)
+    const columns = [
         {
             field: 'id',
             headerName: 'ID',
@@ -72,6 +72,7 @@ const ClientsList = (props) => {
             renderCell: (params) => {
                 const onClick = (action, e) => {
                     e.stopPropagation(); // don't select this row after clicking
+
                     const api = params.api;
                     const thisRow = {};
 
@@ -99,53 +100,21 @@ const ClientsList = (props) => {
                     }
                 };
                 return (
-                    <>
-                        <Icon onClick={handleClick}
-                              color={"primary"}
-                              baseClassName="cursor-pointer far"
-                              className={"fa-ellipsis-vertical"}/>
-                        <Menu
-                            anchorEl={anchorEl}
-                            id="account-menu"
-                            open={open}
-                            onClose={handleClose}
-                            onClick={handleClose}
-                            transformOrigin={{horizontal: 'right', vertical: 'top'}}
-                            anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-                        >
-                            <MenuItem sx={{color: 'red'}} onClick={onClick.bind(this, 'delete')}>
-                                <ListItemIcon>
-                                    <Icon
-                                        color={"error"}
-                                        baseClassName="fal"
-                                        className={"fa-trash"}/>
-                                </ListItemIcon>
-                                <ListItemText>Delete</ListItemText>
-                            </MenuItem>
-                            {/*<MenuItem sx={{color: 'primary'}} onClick={handleClose}>*/}
-                            {/*    <ListItemIcon>*/}
-                            {/*        <Icon*/}
-                            {/*            color={"primary"}*/}
-                            {/*            baseClassName="fal"*/}
-                            {/*            className={"fa-pen-to-square"}/>*/}
-                            {/*    </ListItemIcon>*/}
-                            {/*    <ListItemText>Update</ListItemText>*/}
-                            {/*</MenuItem>*/}
-                            <MenuItem sx={{color: 'primary'}} onClick={onClick.bind(this, 'resend-email')}>
-                                <ListItemIcon>
-                                    <Icon
-                                        color={"primary"}
-                                        baseClassName="fal"
-                                        className={"fa-paper-plane-top"}/>
-                                </ListItemIcon>
-                                <ListItemText>Resend Email</ListItemText>
-                            </MenuItem>
-                        </Menu>
-                    </>
+                    <div className={'flex align-items-center gap-6'}>
+                        <Icon
+                            color={"error"}
+                            onClick={onClick.bind(this, 'delete')}
+                            baseClassName="fal cursor-pointer"
+                            className={"fa-trash"}/>
+                        <Icon
+                            onClick={onClick.bind(this, 'resend-email')}
+                            baseClassName="fal cursor-pointer"
+                            className={"fa-paper-plane"}/>
+                    </div>
                 )
             }
         },
-    ]);
+    ];
     return (
         <Box sx={{height: 400, width: '100%'}}>
             <DataGrid
@@ -153,9 +122,6 @@ const ClientsList = (props) => {
                 columns={columns}
                 pageSize={10}
                 rowsPerPageOptions={[10]}
-                // checkboxSelection
-                disableSelectionOnClick
-                experimentalFeatures={{newEditingApi: true}}
             />
         </Box>
     )

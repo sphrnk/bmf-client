@@ -6,6 +6,7 @@ import {useEffect} from "react";
 import axios from "axios";
 import FileDownload from "js-file-download";
 import {read, utils} from 'xlsx';
+import {fetchClientsData} from "../client/client-actions";
 
 const DOMAIN = process.env.REACT_APP_BACKEND_URL;
 
@@ -309,42 +310,36 @@ export const uploadFile = (requestData) => {
 }
 export const deleteFile = (requestData) => {
     return async (dispatch) => {
-        const {userId, token, folderName, pathObj} = requestData
-        console.log(pathObj[pathObj.length - 1].path)
+        const {userId, token, path, pathObj} = requestData
+        console.log(path)
         dispatch(uiActions.showSpinnerLoading())
         const fetchRequest = async () => {
-            const response = await fetch(`${DOMAIN}/files/folders`, {
-                method: "POST",
-                body: JSON.stringify({
-                    userId: userId,
-                    path: pathObj[pathObj.length - 1].path,
-                    folderName: folderName
-                }),
+            const response = await fetch(`${DOMAIN}/files?path=${requestData.path}`, {
+                method: "DELETE",
                 headers: {
-                    "Authorization": 'Bearer ' + token,
+                    "Authorization": 'Bearer ' + requestData.token,
                     "Content-Type": "application/json",
                 },
             });
-            const data = await response.json()
-            if (!response.ok) {
-                console.log(data);
-                throw new Error(data.message || "Could not create Folder.");
+            if (response.status === 204) {
+                return {};
             }
-            return data;
+            if (!response.ok) {
+                throw new Error("Could not delete File.");
+            }
         }
         try {
-            const data = await fetchRequest()
+            let data = await fetchRequest()
             console.log(data);
-            dispatch(fetchFilesData({token, userId, path: pathObj[pathObj.length - 1].path}));
+            dispatch(fetchFilesData({path: pathObj[pathObj.length - 1].path, userId, token}));
             dispatch(uiActions.showNotification({
                 status: 'success',
-                message: 'Folder Created Successfully!'
+                message: 'File Removed Successfully!'
             }))
-            dispatch(portalActions.hideCreateFolderModal())
         } catch (e) {
             dispatch(uiActions.showNotification({
                 status: 'error',
-                message: 'Failed to load files'
+                message: 'Failed to delete File'
             }))
         }
     }

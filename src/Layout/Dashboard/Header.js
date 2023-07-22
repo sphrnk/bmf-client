@@ -63,11 +63,11 @@ const Header = () => {
                         BMF Accounting Solutions
                     </Typography>
                 </div>
-                <img
-                    className="object-scale-down "
-                    src={process.env.PUBLIC_URL + `/images/logo/logo.png`}
-                    alt=""
-                />
+                {/*<img*/}
+                {/*    className="object-scale-down "*/}
+                {/*    src={process.env.PUBLIC_URL + `/images/logo/logo.png`}*/}
+                {/*    alt=""*/}
+                {/*/>*/}
                 <div aria-controls={open ? 'account-menu' : undefined}
                      aria-haspopup="true"
                      aria-expanded={open ? 'true' : undefined} onClick={handleClick}

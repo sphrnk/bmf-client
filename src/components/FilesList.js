@@ -7,7 +7,7 @@ import {
     downloadFile,
     // fetchFileData,
     fetchImgFileData,
-    fetchTxtFileData, fetchPDFFileData, fetchExcelFileData, fetchFileData
+    fetchTxtFileData, fetchPDFFileData, fetchExcelFileData, fetchFileData, deleteFile
 } from "../store/portal/portal-actions";
 import {useDispatch, useSelector} from "react-redux";
 import {useContext} from "react";
@@ -189,6 +189,14 @@ const FilesList = (props) => {
                         //     format: thisRow.type,
                         //     token
                         // }));
+                    }
+                    if (action === "delete") {
+                        dispatch(deleteFile({
+                            pathObj: path,
+                            path: path[path.length - 1].path + thisRow.name,
+                            fileName: thisRow.name,
+                            token
+                        }));
                     }
                 };
                 return (<div className={"flex justify-between gap-6 items-center"}>
