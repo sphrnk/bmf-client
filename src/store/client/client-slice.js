@@ -2,6 +2,7 @@ import {createSlice} from "@reduxjs/toolkit";
 
 const initialState = {
     clients: [],
+    client: null,
 }
 
 const clientSlice = createSlice({
@@ -10,6 +11,9 @@ const clientSlice = createSlice({
     reducers: {
         replaceClients(state, action) {
             state.clients = action.payload.clients
+        },
+        replaceClient(state, action) {
+            state.client = action.payload.client
         },
         createClient(state, action) {
 

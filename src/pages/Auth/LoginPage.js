@@ -40,11 +40,7 @@ const LoginPage = () => {
                 new Date().getTime() + remainingMilliseconds
             );
             authCtx.login(user, token, expiryDate);
-            if (user.tempPasswordNotChanged) {
-                navigate('/change-temp-password');
-            } else {
-                navigate('/');
-            }
+            navigate('/');
         }
     })
     return (

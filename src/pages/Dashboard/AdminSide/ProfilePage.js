@@ -2,6 +2,8 @@ import {useContext, useEffect, useState} from "react";
 import AuthContext from "../../../store/auth-context.js";
 import UserInformation from "../../../components/Clients/ClientInformation";
 import UsersPanels from "../../../components/Clients/UsersPanels";
+import {useDispatch} from "react-redux";
+import {fetchClientData} from "../../../store/client/client-actions";
 
 
 const ProfilePage = () => {
@@ -12,6 +14,7 @@ const ProfilePage = () => {
                                        businessPortal={user.businessPortal}
                                        individualPanels={user.individualPortals}
                                        businessPanels={user.businessPortals}/>
+    console.log(user);
     return (
         <div className={'flex flex-col gap-8'}>
             <div className="flex flex-col gap-4">

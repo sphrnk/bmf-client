@@ -14,7 +14,7 @@ const BusinessPortalPage = (props) => {
     const {sendRequest, status, data, error} = useHttp(createPanel);
     const createPanelRequest = async (data) => {
         console.log(data)
-        await sendRequest({...data, token});
+        // await sendRequest({...data, token});
     }
     if (data) {
         // console.log(data);

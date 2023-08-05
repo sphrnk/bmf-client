@@ -1,7 +1,7 @@
 import Select from "./Forms/UI/Select";
 import InfoItem from "./UI/InfoItem";
 import {InputAdornment, TextField, Typography} from "@mui/material";
-import React, {useState, useEffect,useRef} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import useHttp from "../hooks/use-http";
 import {IMaskInput} from "react-imask";
 import PropTypes from "prop-types";
@@ -29,7 +29,7 @@ phoneTextMaskCustom.propTypes = {
 };
 const IndividualPanelInformation = (props) => {
     const {panel} = props
-    console.log(panel,"123123123131231231313131231312312312313123123123");
+    console.log(props);
     const [formattedInputValues, setFormattedInputValues] = useState({
         phoneNumber: '',
     })

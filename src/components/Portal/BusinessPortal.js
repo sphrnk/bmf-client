@@ -328,16 +328,16 @@ const BusinessPortal = (props) => {
                     }}
                 />
             </div>
-            <Typography component={'h1'} variant={'h5'} fontWeight={'bold'} gutterBottom>
-                Business Partners:
-            </Typography>
-            <div className={"flex justify-start my-4 gap-4"}>
-                <TextField variant="outlined" label={"Amount Of Partners"} size={"small"}/>
-                <Button onClick={addBusinessPartnerButtonClickHandler}
-                        startIcon={<i className="fa-regular fa-user-plus"></i>} variant={'contained'}>
-                    Add Business Partners
-                </Button>
-            </div>
+            {/*<Typography component={'h1'} variant={'h5'} fontWeight={'bold'} gutterBottom>*/}
+            {/*    Business Partners:*/}
+            {/*</Typography>*/}
+            {/*<div className={"flex justify-start my-4 gap-4"}>*/}
+            {/*    <TextField variant="outlined" label={"Amount Of Partners"} size={"small"}/>*/}
+            {/*    <Button onClick={addBusinessPartnerButtonClickHandler}*/}
+            {/*            startIcon={<i className="fa-regular fa-user-plus"></i>} variant={'contained'}>*/}
+            {/*        Add Business Partners*/}
+            {/*    </Button>*/}
+            {/*</div>*/}
             {
                 showAddBusinessPartner && <>
                     <div className={"grid grid-cols-1 lg:grid-cols-3 mb-4 gap-4"}>
