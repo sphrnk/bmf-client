@@ -4,44 +4,21 @@ import React, {useRef} from "react";
 import useHttp from "../../hooks/use-http";
 import {validateZipCode} from "../../lib/utils";
 
-const Address = () => {
-    const {
-        sendRequest: sendZipCodeRequest,
-        status: zipCodeStatus,
-        data: zipCodeData,
-        error: zipCodeErr
-    } = useHttp(validateZipCode);
-    const zipCodeInputRef = useRef();
-    const addressLineInputRef = useRef();
-    const aptInputRef = useRef();
-    const cityInputRef = useRef();
-    const stateInputRef = useRef();
-    const zipCodeHandler = async () => {
-        const enteredZipCode = zipCodeInputRef.current.value;
-        // console.log(enteredZipCode);
-        if (enteredZipCode.length === 5) {
-            await sendZipCodeRequest({enteredZipCode});
-        }
-    }
-    if (zipCodeStatus === "completed" && zipCodeData && !zipCodeErr) {
-        cityInputRef.current.value = zipCodeData.data.code[0];
-        stateInputRef.current.value = zipCodeData.data.code[1];
-    }
+const Address = React.forwardRef((props, ref) => {
     return (
         <>
-            <div
-                className={"grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4"}>
+            <div className={"grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4"}>
                 <TextField
                     label="Zip Code"
                     required
-                    onKeyUp={zipCodeHandler}
-                    inputRef={zipCodeInputRef}
+                    onKeyUp={props.onZipCodeHandler}
+                    inputRef={ref.zipCodeInputRef}
                     type={'text'}
                 />
                 <TextField
                     label="City"
                     required
-                    inputRef={cityInputRef}
+                    inputRef={ref.cityInputRef}
                     disabled
                     type={'text'}
                     InputProps={{
@@ -52,7 +29,7 @@ const Address = () => {
                 <TextField
                     label="State"
                     required
-                    inputRef={stateInputRef}
+                    inputRef={ref.stateInputRef}
                     disabled
                     type={'text'}
                     InputProps={{
@@ -62,13 +39,12 @@ const Address = () => {
                 />
 
             </div>
-            <div
-                className={"grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4"}>
+            <div className={"grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4"}>
                 <TextField
                     label="Address Line"
                     required
                     className={"col-span-8"}
-                    inputRef={addressLineInputRef}
+                    inputRef={ref.addressLineInputRef}
                     type={'text'}
                     InputProps={{
                         startAdornment: <InputAdornment position="start"><i
@@ -78,7 +54,7 @@ const Address = () => {
                 <TextField
                     label="Apt"
                     className={"col-span-4"}
-                    inputRef={aptInputRef}
+                    inputRef={ref.aptInputRef}
                     type={'text'}
                     InputProps={{
                         startAdornment: <InputAdornment position="start"><i
@@ -88,5 +64,5 @@ const Address = () => {
             </div>
         </>
     )
-}
+})
 export default Address;

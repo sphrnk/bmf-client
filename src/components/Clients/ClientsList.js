@@ -28,35 +28,20 @@ const ClientsList = (props) => {
             hide: true,
         },
         {
-            field: 'email',
-            headerName: 'Email',
-            width: 300,
-            editable: true,
+            field: 'name',
+            headerName: 'Full Name',
+            width: 500,
+            editable: false,
             renderCell: (params) => (
                 <Link className={'underline text-primary'}
-                      to={`/clients/${params.row._id}`}>{params.value}</Link>
+                      to={`/clients/${params.row._id}`}>{params.row.lastName} {params.row.middleName} {params.row.firstName}</Link>
             )
         },
         {
-            field: 'firstName',
-            headerName: 'First Name',
-            width: 200,
-            editable: true,
-
-        },
-        {
-            field: 'middleName',
-            headerName: 'Middle Name',
-            width: 200,
-            editable: true,
-            valueGetter: (params) =>
-                params.value === "" ? "-" : params.row.middleName,
-        },
-        {
-            field: 'lastName',
-            headerName: 'Last Name',
-            width: 200,
-            editable: true,
+            field: 'email',
+            headerName: 'Email',
+            width: 300,
+            editable: false,
         },
         {
             field: 'phoneNumber',

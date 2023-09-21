@@ -14,6 +14,8 @@ import {IMaskInput} from "react-imask";
 import PropTypes from "prop-types";
 import useHttp from "../../hooks/use-http";
 import {validateZipCode} from "../../lib/utils";
+import Address from "./Address";
+import BusinessPartner from "./businessPartner";
 
 const phoneTextMaskCustom = React.forwardRef(function TextMaskCustom(props, ref) {
     const {onChange, ...other} = props;
@@ -134,6 +136,7 @@ const BusinessPortal = (props) => {
     const aptInputRef = useRef();
     const cityInputRef = useRef();
     const stateInputRef = useRef();
+    const partnersAmountInputRef = useRef();
     const businessPartnerZipCodeInputRef = useRef();
     const businessPartnerAddressLineInputRef = useRef();
     const businessPartnerAptInputRef = useRef();
@@ -273,71 +276,24 @@ const BusinessPortal = (props) => {
             <Typography component={'h1'} variant={'h5'} fontWeight={'bold'} gutterBottom>
                 Address:
             </Typography>
-            <div className={"grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4"}>
-                <TextField
-                    label="Zip Code"
-                    required
-                    onKeyUp={zipCodeHandler}
-                    inputRef={zipCodeInputRef}
-                    type={'text'}
-                />
-                <TextField
-                    label="City"
-                    required
-                    inputRef={cityInputRef}
-                    disabled
-                    type={'text'}
-                    InputProps={{
-                        startAdornment: <InputAdornment position="start"><i
-                            className="fa-regular fa-city"></i></InputAdornment>,
-                    }}
-                />
-                <TextField
-                    label="State"
-                    required
-                    inputRef={stateInputRef}
-                    disabled
-                    type={'text'}
-                    InputProps={{
-                        startAdornment: <InputAdornment position="start"><i
-                            className="fa-regular fa-flag-usa"></i></InputAdornment>,
-                    }}
-                />
-
+            <Address onZipCodeHandler={zipCodeHandler} ref={{
+                zipCodeInputRef,
+                cityInputRef,
+                stateInputRef,
+                addressLineInputRef,
+                aptInputRef
+            }}/>
+            <Typography component={'h1'} variant={'h5'} fontWeight={'bold'} gutterBottom>
+                Business Partners:
+            </Typography>
+            <div className={"flex justify-start my-4 gap-4"}>
+                <TextField inputRef={partnersAmountInputRef} variant="outlined" label={"Amount Of Partners"}
+                           size={"small"}/>
+                <Button onClick={addBusinessPartnerButtonClickHandler}
+                        startIcon={<i className="fa-regular fa-user-plus"></i>} variant={'contained'}>
+                    Add Business Partners
+                </Button>
             </div>
-            <div className={"grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4"}>
-                <TextField
-                    label="Address Line"
-                    required
-                    className={"col-span-8"}
-                    inputRef={addressLineInputRef}
-                    type={'text'}
-                    InputProps={{
-                        startAdornment: <InputAdornment position="start"><i
-                            className="fa-regular fa-location-dot"></i></InputAdornment>,
-                    }}
-                />
-                <TextField
-                    label="Apt"
-                    className={"col-span-4"}
-                    inputRef={aptInputRef}
-                    type={'text'}
-                    InputProps={{
-                        startAdornment: <InputAdornment position="start"><i
-                            className="fa-regular fa-building"></i></InputAdornment>,
-                    }}
-                />
-            </div>
-            {/*<Typography component={'h1'} variant={'h5'} fontWeight={'bold'} gutterBottom>*/}
-            {/*    Business Partners:*/}
-            {/*</Typography>*/}
-            {/*<div className={"flex justify-start my-4 gap-4"}>*/}
-            {/*    <TextField variant="outlined" label={"Amount Of Partners"} size={"small"}/>*/}
-            {/*    <Button onClick={addBusinessPartnerButtonClickHandler}*/}
-            {/*            startIcon={<i className="fa-regular fa-user-plus"></i>} variant={'contained'}>*/}
-            {/*        Add Business Partners*/}
-            {/*    </Button>*/}
-            {/*</div>*/}
             {
                 showAddBusinessPartner && <>
                     <div className={"grid grid-cols-1 lg:grid-cols-3 mb-4 gap-4"}>
@@ -400,7 +356,14 @@ const BusinessPortal = (props) => {
                     </div>
                 </>
             }
-
+            {/*<BusinessPartner ref={{*/}
+            {/*    businessPartnerFirstNameInputRef,*/}
+            {/*    businessPartnerMiddleNameInputRef,*/}
+            {/*    businessPartnerLastNameInputRef,*/}
+            {/*    businessPartnerEmailInputRef,*/}
+            {/*    businessPartnerPhoneNumber: formattedInputValues.businessPartnerPhoneNumber,*/}
+            {/*    businessPartnerSSNNumber: formattedInputValues.businessPartnerSSNNumber*/}
+            {/*}}/>*/}
             <div className={"flex justify-end"}>
                 <Button type={"submit"} variant="contained">Submit</Button>
             </div>
