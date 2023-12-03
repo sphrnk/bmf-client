@@ -11,27 +11,15 @@ import ClientsList from "../../../../components/Clients/ClientsList";
 import {Link as RouterLink} from 'react-router-dom'
 import {fetchClientsData} from "../../../../store/client/client-actions";
 import {useDispatch, useSelector} from "react-redux";
+import {useGetClientsQuery} from "../../../../store/client/clientsApiSlice";
 
 
 const ClientsPage = () => {
-    const [showCreateAccountModal, setShowCreateAccountModal] = useState(false);
-    const authCtx = useContext(AuthContext);
-    const {token, user} = authCtx;
-    const dispatch = useDispatch();
-    const clients = useSelector((state) => state.clients.clients);
-    console.log("clients:", clients)
-    const closeCreateAccountModalHandler = () => {
-        setShowCreateAccountModal(false)
-    }
-    const openCreateAccountModalHandler = () => {
-        setShowCreateAccountModal(true)
-    }
-    useEffect(() => {
-        // getUsersRequest({token})
-        dispatch(fetchClientsData({token}));
-    }, [token]);
-
-
+    const {data: clients, isLoading, isSuccess, isError, error} = useGetClientsQuery('clientsList', {
+        pollingInterval: 60000,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true
+    })
     return (
         <>
             <div className="flex flex-col sm:flex-row justify-between mb-4 gap-4">
@@ -42,19 +30,8 @@ const ClientsPage = () => {
                     </Button>
                 </Link>
             </div>
-            {clients.length > 0 && <ClientsList clients={clients}/>}
-            {clients.length === 0 && <p>Nothing To Show</p>}
-            {/*{showCreateAccountModal &&*/}
-            {/*    <Modal title={"Create Account"}>*/}
-            {/*        <CreateAccountForm onConfirm={closeCreateAccountModalHandler}/>*/}
-            {/*    </Modal>}*/}
-            {showCreateAccountModal &&
-                <Modal title={"Create Account"}
-                       onClose={closeCreateAccountModalHandler} open={showCreateAccountModal}>
-                    <CreateAccountForm onClose={closeCreateAccountModalHandler}
-                                       onConfirm={closeCreateAccountModalHandler}/>
-                </Modal>
-            }
+            {isSuccess && <ClientsList isLoading={isLoading} list={clients}/>}
+            {clients?.length === 0 && <p>Nothing To Show</p>}
         </>
     );
 }

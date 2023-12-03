@@ -18,8 +18,8 @@ const AuthFooter = () => {
         isSidebarShown ? "ml-28 md:ml-0 " : "ml-0 md:ml-28 "
     }w-full bg-white border-t transition-all z-20`;
 
-    const authCtx = useContext(AuthContext)
-    const {user} = authCtx;
+    // const authCtx = useContext(AuthContext)
+    // const {user} = authCtx;
     // console.log(user);
     const showCreateAccountHandler = () => {
         setShowModal((prevState) => {

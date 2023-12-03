@@ -1,8 +1,8 @@
 import {Button} from "@mui/material";
 import {useContext, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {portalActions} from "../store/portal/portal-slice";
-import {uploadFile} from "../store/portal/portal-actions";
+import {portalActions} from "../store/file/portal-slice";
+import {uploadFile} from "../store/file/portal-actions";
 
 import AuthContext from "../store/auth-context";
 

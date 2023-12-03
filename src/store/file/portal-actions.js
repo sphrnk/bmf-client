@@ -229,6 +229,47 @@ export const createFolder = (requestData) => {
         }
     }
 }
+export const moveFile = (requestData) => {
+    return async (dispatch) => {
+        const {userId, token, folderName, pathObj} = requestData
+        console.log(pathObj[pathObj.length - 1].path)
+        dispatch(uiActions.showSpinnerLoading())
+        const fetchRequest = async () => {
+            const response = await fetch(`${DOMAIN}/files/folders`, {
+                method: "POST",
+                body: JSON.stringify({
+                    userId: userId,
+                    path: pathObj[pathObj.length - 1].path,
+                    folderName: folderName
+                }),
+                headers: {
+                    "Authorization": 'Bearer ' + token,
+                    "Content-Type": "application/json",
+                },
+            });
+            console.log(DOMAIN);
+            if (!response.ok) {
+                throw new Error("Could not create Folder.");
+            }
+            return await response.json()
+        }
+        try {
+            const data = await fetchRequest()
+            console.log(data);
+            dispatch(fetchFilesData({token, userId, path: pathObj[pathObj.length - 1].path}));
+            dispatch(uiActions.showNotification({
+                status: 'success',
+                message: 'Folder Created Successfully!'
+            }))
+            dispatch(portalActions.hideCreateFolderModal())
+        } catch (e) {
+            dispatch(uiActions.showNotification({
+                status: 'error',
+                message: 'Failed to create folder'
+            }))
+        }
+    }
+}
 
 export const downloadFile = (requestData) => {
     return async (dispatch) => {

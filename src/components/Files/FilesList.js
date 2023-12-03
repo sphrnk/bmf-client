@@ -8,11 +8,11 @@ import {
     // fetchFileData,
     fetchImgFileData,
     fetchTxtFileData, fetchPDFFileData, fetchExcelFileData, fetchFileData, deleteFile
-} from "../store/portal/portal-actions";
+} from "../../store/file/portal-actions";
 import {useDispatch, useSelector} from "react-redux";
 import {useContext} from "react";
-import AuthContext from "../store/auth-context";
-import {portalActions} from "../store/portal/portal-slice";
+import AuthContext from "../../store/auth-context";
+import {portalActions} from "../../store/file/portal-slice";
 
 function formatBytes(bytes, decimals = 2) {
     if (!+bytes) return '0 Bytes'
@@ -31,7 +31,7 @@ const FilesList = (props) => {
     const dispatch = useDispatch();
     const authCtx = useContext(AuthContext);
     const {token, user} = authCtx;
-    const {path, files} = props;
+    const path = useSelector((state) => state.portal.pathObj)
     const columns = [
         {
             field: 'name',
@@ -240,26 +240,42 @@ const FilesList = (props) => {
     }
     return (
         <Box sx={{height: 400, width: '100%'}}>
-            <DataGrid
-                // classes={{paper:}}
-                sx={{background: '#fdfdfd'}}
-                // components={{Header:}}
-                rows={props.files}
-                columns={columns}
-                pageSize={10}
-                // checkboxSelection
-                // onSelectionModelChange={(ids) => {
-                //     const selectedIDs = new Set(ids);
-                //     const selectedRows = props.files.filter((row) =>
-                //         selectedIDs.has(row.id),
-                //     );
-                //     props.onSetSelectedRows(selectedRows);
-                // }}
-                // isRowSelectable={(params) => params.row.type === 0}
-                rowsPerPageOptions={[10]}
-                onRowDoubleClick={handleClick}
-                // onCellClick={(x) => console.log(x)}
-            />
+            {props.selection &&
+                <DataGrid
+                    // classes={{paper:}}
+                    sx={{background: '#fdfdfd'}}
+                    // components={{Header:}}
+                    rows={props.files}
+                    columns={columns}
+                    pageSize={10}
+                    checkboxSelection
+                    onSelectionModelChange={(ids) => {
+                        const selectedIDs = new Set(ids);
+                        const selectedRows = props.files.filter((row) =>
+                            selectedIDs.has(row.id),
+                        );
+                        props.onSetSelectedRows(selectedRows);
+                    }}
+                    // isRowSelectable={(params) => params.row.type === 0}
+                    rowsPerPageOptions={[10]}
+                    onRowDoubleClick={handleClick}
+                    // onCellClick={(x) => console.log(x)}
+                />
+            }
+            {!props.selection &&
+                <DataGrid
+                    // classes={{paper:}}
+                    sx={{background: '#fdfdfd'}}
+                    // components={{Header:}}
+                    rows={props.files}
+                    columns={columns}
+                    pageSize={10}
+                    // isRowSelectable={(params) => params.row.type === 0}
+                    rowsPerPageOptions={[10]}
+                    onRowDoubleClick={handleClick}
+                    // onCellClick={(x) => console.log(x)}
+                />
+            }
         </Box>
     )
 }

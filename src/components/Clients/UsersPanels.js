@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import UserIndividualPanels from "./UserIndividualPanels";
 import UserBusinessPanels from "./UserBusinessPanels";
 import AuthContext from "../../store/auth-context";
+import {useSelector} from "react-redux";
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -36,8 +37,7 @@ function a11yProps(index) {
 
 const UsersPanels = (props) => {
     const [shownTab, setShownTab] = useState(0);
-    const authCtx = useContext(AuthContext);
-    const {token, user} = authCtx;
+    const {userInfo: user, userToken: token} = useSelector((state) => state.auth)
     console.log(props);
     let individualPanels;
     let businessPanels;

@@ -3,45 +3,40 @@ import useHttp from "../../../hooks/use-http";
 import React, {useContext, useEffect, useState} from "react";
 import AuthContext from "../../../store/auth-context";
 import LoadingSpinner from "../../../components/UI/LoadingSpinner";
-import FilesList from "../../../components/FilesList";
-import FileExplorerActions from "../../../components/FileExplorerActions";
+import FilesList from "../../../components/Files/FilesList";
+import FileExplorerActions from "../../../components/Files/FileExplorerActions";
 import Modal from "../../../components/UI/Modal";
 import {Button, List, ListItem, ListItemAvatar, ListItemText, TextField} from "@mui/material";
 import {useRef} from "react";
 import {uiActions} from "../../../store/ui-slice";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchFilesData, createFolder} from "../../../store/portal/portal-actions";
-import {portalActions} from "../../../store/portal/portal-slice";
+import {fetchFilesData, createFolder} from "../../../store/file/portal-actions";
+import {portalActions} from "../../../store/file/portal-slice";
 import {fetchClientsData} from "../../../store/client/client-actions";
 import ClientsList from "../../../components/Clients/ClientsList";
 import FileViewer from "../../../components/FileViewer";
 
 const FilesPage = () => {
-    const authCtx = useContext(AuthContext);
-    const {token, user} = authCtx;
+    const {userInfo: user, userToken: token} = useSelector((state) => state.auth)
     const dispatch = useDispatch();
-    const clients = useSelector((state) => state.clients.clients)
     const files = useSelector((state) => state.portal.files)
-    console.log(clients)
     console.log(files)
     const pathObj = useSelector((state) => state.portal.pathObj)
     const [selectedRows, setSelectedRows] = useState([]);
     const lastPath = pathObj[pathObj.length - 1];
-    console.log(lastPath)
     useEffect(() => {
         dispatch(fetchFilesData({token, userId: user._id, path: lastPath.path}));
         console.log("done")
-    }, [token, pathObj, user]);
+    }, [token, lastPath, user]);
 
     const changePathHandler = (path) => {
         console.log(path);
         dispatch(portalActions.changePath({path}))
     }
-
     return (
         <>
             <h1 className={"font-bold text-4xl mb-3"}>Portals</h1>
-            <FileExplorerActions selectedRows={selectedRows}/>
+            <FileExplorerActions files={files} onChangePath={changePathHandler} selectedRows={selectedRows}/>
             {files.length === 0 &&
                 <p>Nothing To Show!</p>
             }
@@ -49,7 +44,7 @@ const FilesPage = () => {
             {/*    <ClientsList clients={clients} onChangePath={changePathHandler}/>*/}
             {/*}*/}
             {files.length > 0 &&
-                <FilesList path={pathObj} files={files} onChangePath={changePathHandler}
+                <FilesList files={files} onChangePath={changePathHandler}
                            onSetSelectedRows={(params) => setSelectedRows(params)}/>
             }
             {/*<FileViewer*/}

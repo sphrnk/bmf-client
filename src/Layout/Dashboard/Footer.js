@@ -18,8 +18,8 @@ const Footer = () => {
         isSidebarShown ? "ml-28 md:ml-0 " : "ml-0 md:ml-28 "
     }w-full bg-white border-t transition-all z-20`;
 
-    const authCtx = useContext(AuthContext)
-    const {user} = authCtx;
+    // const authCtx = useContext(AuthContext)
+    // const {user} = authCtx;
     // console.log(user);
     const showCreateAccountHandler = () => {
         setShowModal((prevState) => {
@@ -52,13 +52,13 @@ const Footer = () => {
                 <div className={footerClasses}>
                     <div className="container mx-auto py-5 px-4">
                         <div className="gap-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 place-content-end">
-                            {user.role === "admin" && <button
-                                onClick={showCreateAccountHandler}
-                                className="lg:col-start-2 cursor-pointer py-2 px-4 bg-primary text-white rounded flex items-center gap-3 justify-center"
-                            >
-                                Create Account
-                                <i className="fa-regular fa-plus fa-xl"></i>
-                            </button>}
+                            {/*{user.role === "admin" && <button*/}
+                            {/*    onClick={showCreateAccountHandler}*/}
+                            {/*    className="lg:col-start-2 cursor-pointer py-2 px-4 bg-primary text-white rounded flex items-center gap-3 justify-center"*/}
+                            {/*>*/}
+                            {/*    Create Account*/}
+                            {/*    <i className="fa-regular fa-plus fa-xl"></i>*/}
+                            {/*</button>}*/}
                             <button
                                 onClick={showCreatePanelHandler}
                                 className="lg:col-start-3 cursor-pointer py-2 px-4 bg-primary text-white rounded flex items-center gap-3 justify-center"

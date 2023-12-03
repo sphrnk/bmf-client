@@ -13,7 +13,7 @@ const NotFoundPage = () => {
                         <Typography component={'h6'} variant={'h6'} fontWeight={'bold'}>
                             OOPS, Page Not Found!
                         </Typography>
-                        <Typography component={'body1'} variant={'body1'}>
+                        <Typography variant={'body1'}>
                             The page isn't available right now
                         </Typography>
                     </div>

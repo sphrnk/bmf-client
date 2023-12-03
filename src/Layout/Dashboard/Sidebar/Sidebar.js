@@ -66,9 +66,7 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== 'open'})
 );
 
 const Sidebar = (props) => {
-    const authCtx = useContext(AuthContext);
-    const {user} = authCtx;
-    console.log(user.role);
+    const {userInfo} = useSelector((state) => state.auth)
     const {sidebarState} = useSelector((state) => state.ui);
     const dispatch = useDispatch();
     const handleDrawerClose = () => {
@@ -83,18 +81,18 @@ const Sidebar = (props) => {
             </DrawerHeader>
             <Divider/>
             <List>
-                <ListItem disablePadding>
-                    <NavLink
-                        to={'/dashboard'}
-                        className={(navData) => navData.isActive ? "active text-center px-3 py-2 flex flex-col items-center w-full gap-1" : "text-center px-3 py-2 flex flex-col items-center w-full gap-1"}>
-                        <div
-                            className={"glassmorphic rounded-3xl px-4 py-0.5"}>
-                            <i className="fa-solid fa-house"></i>
-                            <span className="absolute right-0 top-0 w-2 h-2 rounded-full"></span>
-                        </div>
-                        <ListItemText primary={'Dashboard'}/>
-                    </NavLink>
-                </ListItem>
+                {/*<ListItem disablePadding>*/}
+                {/*    <NavLink*/}
+                {/*        to={'/dashboard'}*/}
+                {/*        className={(navData) => navData.isActive ? "active text-center px-3 py-2 flex flex-col items-center w-full gap-1" : "text-center px-3 py-2 flex flex-col items-center w-full gap-1"}>*/}
+                {/*        <div*/}
+                {/*            className={"glassmorphic rounded-3xl px-4 py-0.5"}>*/}
+                {/*            <i className="fa-solid fa-house"></i>*/}
+                {/*            <span className="absolute right-0 top-0 w-2 h-2 rounded-full"></span>*/}
+                {/*        </div>*/}
+                {/*        <ListItemText primary={'Dashboard'}/>*/}
+                {/*    </NavLink>*/}
+                {/*</ListItem>*/}
                 <ListItem disablePadding>
                     <NavLink
                         to={'/profile'}
@@ -119,7 +117,7 @@ const Sidebar = (props) => {
                         <ListItemText primary={'Portals'}/>
                     </NavLink>
                 </ListItem>
-                {user.role === "admin" &&
+                {userInfo.role === "admin" &&
                     <>
                         <ListItem disablePadding>
                             <NavLink

@@ -1,10 +1,10 @@
 import {uiActions} from "../ui-slice";
 import {clientActions} from "./client-slice";
-import {authActions} from "../auth-slice";
+// import {authActions} from "../auth-slice";
 import useHttp from "../../hooks/use-http";
 import {getFiles} from "../../lib/api/files";
 import {useEffect} from "react";
-import {fetchFilesData} from "../portal/portal-actions";
+import {fetchFilesData} from "../file/portal-actions";
 
 import AuthContext from "../auth-context";
 
@@ -181,9 +181,9 @@ export const updatePassword = (requestData) => {
             const data = await fetchRequest();
             console.log(data)
             const {user, token} = data.data;
-            dispatch(authActions.setCredentials({
-                user, token
-            }))
+            // dispatch(authActions.setCredentials({
+            //     user, token
+            // }))
             dispatch(uiActions.showNotification({
                 status: 'success',
                 message: 'Password changed Successfully!'

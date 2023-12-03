@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {portalActions} from "../store/portal/portal-slice.js";
+import {portalActions} from "../store/file/portal-slice.js";
 import DocViewer, {DocViewerRenderers} from "@cyntler/react-doc-viewer";
 
 import {

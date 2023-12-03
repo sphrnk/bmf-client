@@ -58,35 +58,36 @@ const DrawerHeader = styled('div')(({theme}) => ({
 }));
 
 const Layout = (props) => {
-    const authCtx = useContext(AuthContext);
-    const {token, user} = authCtx;
+    const {userInfo: user, userToken: token} = useSelector((state) => state.auth)
     const {sidebarState} = useSelector((state) => state.ui);
     const {isUploading, uploadFilePercentage} = useSelector((state) => state.portal);
-    const [changeTempPassword, setChangeTempPasswordSate] = useState(authCtx.user.tempPasswordNotChanged);
+    const [changeTempPassword, setChangeTempPasswordSate] = useState(user.tempPasswordNotChanged);
     const changePasswordStateHandler = () => {
         setChangeTempPasswordSate(false);
     }
     return (
         <Box sx={{display: 'flex'}}>
             <Header/>
-            {/*{!user.tempPasswordNotChanged &&*/}
-            {authCtx.user.tempPasswordNotChanged && changeTempPassword &&
+
+            {user.tempPasswordNotChanged && changeTempPassword &&
                 <Modal title={'Change Password'}
                        open={changeTempPassword}>
                     <FirstTimeChangePasswordForm onConfirm={changePasswordStateHandler}/>
                 </Modal>}
-            {!authCtx.user.tempPasswordNotChanged && <>
-                <Sidebar/>
-                {/*{isUserActionsShown && user && token && <UserActions isSidebarShown={isSidebarShown}/>}*/}
-                <Box component="main" sx={{flexGrow: 1, p: 3}}>
-                    <DrawerHeader/>
-                    {/*<div className={mainClasses}>*/}
-                    <div className="container mx-auto py-5 px-4">
-                        {props.children}
-                        {/*</div>*/}
-                    </div>
-                </Box>
-            </>}
+            {!user.tempPasswordNotChanged &&
+                <>
+                    <Sidebar/>
+                    {/*{isUserActionsShown && user && token && <UserActions isSidebarShown={isSidebarShown}/>}*/}
+                    <Box component="main" sx={{flexGrow: 1, p: 3}}>
+                        <DrawerHeader/>
+                        {/*<div className={mainClasses}>*/}
+                        <div className="container mx-auto py-5 px-4">
+                            {props.children}
+                            {/*</div>*/}
+                        </div>
+                    </Box>
+                </>
+            }
             <Notif/>
             {isUploading &&
                 <Box sx={{

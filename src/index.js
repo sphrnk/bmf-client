@@ -46,7 +46,8 @@ let theme = createTheme({
                     padding: '20px 24px'
                 }
             }
-        }
+        },
+
     }
 });
 theme = responsiveFontSizes(theme);

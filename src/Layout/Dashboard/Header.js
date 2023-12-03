@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {uiActions} from "../../store/ui-slice";
 import {AppBar, IconButton, ListItemIcon, Menu, MenuItem, styled, Toolbar, Typography} from "@mui/material";
+import {logout} from "../../store/auth/authSlice";
 
 const drawerWidth = 240;
 const MuiAppBar = styled(AppBar, {
@@ -40,9 +41,8 @@ const Header = () => {
     const handleDrawerOpen = () => {
         dispatch(uiActions.showSidebar());
     };
-    const authCtx = useContext(AuthContext);
     const logoutHandler = () => {
-        authCtx.logout();
+        dispatch(logout())
     }
 
 

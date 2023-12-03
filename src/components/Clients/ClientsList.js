@@ -1,14 +1,27 @@
 import {Link} from "react-router-dom";
 import {DataGrid} from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
-import {Button, Icon, ListItemIcon, ListItemText, Menu, MenuItem} from "@mui/material";
+import {
+    Button,
+    Icon,
+    ListItemIcon,
+    ListItemText,
+    Menu,
+    MenuItem, Paper,
+    Table, TableBody, TableCell,
+    TableContainer,
+    TableHead, TableRow
+} from "@mui/material";
 import {useMemo, useContext, useState} from "react";
 import {deleteClient, resendEmail} from "../../store/client/client-actions";
 import {useDispatch} from "react-redux";
 import AuthContext from "../../store/auth-context";
+import ClientItem from "./ClientItem";
+import TableLoader from "../UI/TableLoader";
 
 
 const ClientsList = (props) => {
+    const {ids, isLoading} = props.list;
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const dispatch = useDispatch();
@@ -100,15 +113,32 @@ const ClientsList = (props) => {
             }
         },
     ];
+    const tableContent = ids?.length && ids.map(clientId => <ClientItem key={clientId} clientId={clientId}/>)
     return (
-        <Box sx={{height: 400, width: '100%'}}>
-            <DataGrid
-                rows={props.clients}
-                columns={columns}
-                pageSize={10}
-                rowsPerPageOptions={[10]}
-            />
-        </Box>
+        // <Box sx={{height: 400, width: '100%'}}>
+        //     <DataGrid
+        //         rows={props.clients}
+        //         columns={columns}
+        //         pageSize={10}
+        //         rowsPerPageOptions={[10]}
+        //     />
+        // </Box>
+        <TableContainer component={Paper}>
+            <Table sx={{minWidth: 650}} aria-label="simple table">
+                <TableHead>
+                    <TableRow>
+                        <TableCell>ID</TableCell>
+                        <TableCell>Full Name</TableCell>
+                        <TableCell>Email</TableCell>
+                        <TableCell>Phone Number</TableCell>
+                        <TableCell>Actions</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {isLoading ? <TableLoader rowsNum={20} cellsNum={5}/> : tableContent}
+                </TableBody>
+            </Table>
+        </TableContainer>
     )
 }
 export default ClientsList;

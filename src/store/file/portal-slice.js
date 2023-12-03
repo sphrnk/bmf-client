@@ -1,4 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
+
 const initialState = {
     files: [],
     uploadFilePercentage: 0,
@@ -7,6 +8,7 @@ const initialState = {
     notification: null,
     createFolderModal: false,
     showUploadFileModal: false,
+    showMoveFileModal: false,
     isFileViewerOpen: false,
     file: null,
     excelFile: null,
@@ -23,6 +25,11 @@ const portalSlice = createSlice({
                 path: state.pathObj[state.pathObj.length - 1].path + action.payload.path + '/'
             }
             state.pathObj = [...state.pathObj, newPath]
+        },
+        selectPath(state, action) {
+            const newPath = state.pathObj.filter((path) => path.id <= action.payload.id)
+            console.log(newPath)
+            state.pathObj = newPath;
         },
         replaceFiles(state, action) {
             state.files = action.payload.files
@@ -48,6 +55,13 @@ const portalSlice = createSlice({
         },
         hideFileViewer(state) {
             state.isFileViewerOpen = false
+        },
+
+        showMoveFileModal(state) {
+            state.showMoveFileModal = true
+        },
+        hideMoveFileModal(state) {
+            state.showMoveFileModal = false
         },
         showCreateFolderModal(state) {
             state.createFolderModal = true

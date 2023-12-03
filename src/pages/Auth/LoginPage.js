@@ -10,39 +10,75 @@ import Notif from "../../components/UI/Notif";
 import LoadingSpinner from "../../components/UI/LoadingSpinner";
 import {login} from "../../lib/api/auth";
 import {uiActions} from "../../store/ui-slice";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {setCredentials} from "../../store/auth/authSlice";
+import {useLoginMutation} from "../../store/auth/authActions";
 
 
 const LoginPage = () => {
+
+    const {userInfo} = useSelector((state) => state.auth)
     const dispatch = useDispatch();
     const authCtx = useContext(AuthContext);
     const navigate = useNavigate();
     const emailInputRef = useRef();
     const passwordInputRef = useRef();
-    const {sendRequest: loginRequest, status: loginStatus, data: loginData, error: loginError} = useHttp(login);
+    const [login, {isLoading, isSuccess, isError, error}] = useLoginMutation()
+    useEffect(() => {
+        emailInputRef.current.focus();
+    }, [])
     const onSubmitHandler = async (event) => {
         event.preventDefault();
         const enteredEmail = emailInputRef.current.value;
         const enteredPassword = passwordInputRef.current.value;
-        await loginRequest({enteredEmail, enteredPassword})
+        const data = await login({email: enteredEmail, password: enteredPassword}).unwrap()
+        console.log(data);
+        dispatch(setCredentials({...data}))
     }
-    if (loginStatus === "completed" && loginError) {
-        dispatch(uiActions.showNotification({
-            status: 'error',
-            message: loginError
-        }))
-    }
+    // localStorage.setItem('userToken', data.token) // deletes token from storage
+    // localStorage.setItem('userInfo', JSON.stringify(data.user)) // deletes token from storage}
     useEffect(() => {
-        if (loginStatus === "completed" && loginData && !loginError) {
-            const {user, token} = loginData.data;
-            const remainingMilliseconds = 60 * 60 * 1000;
-            const expiryDate = new Date(
-                new Date().getTime() + remainingMilliseconds
-            );
-            authCtx.login(user, token, expiryDate);
-            navigate('/');
+        if (isSuccess) {
+            navigate('/')
         }
-    })
+    }, [isSuccess])
+    useEffect(() => {
+        if (isError) {
+            if (!error.status) {
+                dispatch(uiActions.showNotification({
+                    status: 'error',
+                    message: 'No Server Response'
+                }))
+            } else if (error.status === 400) {
+                dispatch(uiActions.showNotification({
+                    status: 'error',
+                    message: 'Missing Email or Password'
+                }))
+            } else if (error.status === 401) {
+                dispatch(uiActions.showNotification({
+                    status: 'error',
+                    message: 'Unauthorized'
+                }))
+            } else {
+                dispatch(uiActions.showNotification({
+                    status: 'error',
+                    message: error
+                }))
+            }
+        }
+    }, [isError, error])
+
+// useEffect(() => {
+//     if (loginStatus === "completed" && loginData && !loginError) {
+//         const {user, token} = loginData.data;
+//         const remainingMilliseconds = 60 * 60 * 1000;
+//         const expiryDate = new Date(
+//             new Date().getTime() + remainingMilliseconds
+//         );
+//         authCtx.login(user, token, expiryDate);
+//         navigate('/portals');
+//     }
+// })
     return (
         <>
             {/*<AuthLayout title={"Sign in"}>*/}
@@ -52,20 +88,9 @@ const LoginPage = () => {
             >
                 <TextField required variant="standard" inputRef={emailInputRef} label={"Email Address"}
                            inputMode={'email'} type={'email'}/>
-                {/*<Input ref={emailInputRef} label={"Email Address"} input={{*/}
-                {/*    id: "email",*/}
-                {/*    name: "email",*/}
-                {/*    className: "border-2 border-gray-200 py-1.5 px-2.5 rounded focus-visible:outline-none",*/}
-                {/*    type: "text",*/}
-                {/*}} required={true}/>*/}
+
                 <TextField required variant="standard" inputRef={passwordInputRef} label={"Password"}
                            type={"password"}/>
-                {/*<Input ref={passwordInputRef} label={"Password"} input={{*/}
-                {/*    id: "password",*/}
-                {/*    name: "password",*/}
-                {/*    className: "border-2 border-gray-200 py-1.5 px-2.5 rounded focus-visible:outline-none",*/}
-                {/*    type: "password",*/}
-                {/*}} required={true}/>*/}
 
                 <div className="w-full flex gap-3">
                     <Typography component={'span'} variant={'body2'} className="text-gray-600">Forgot
@@ -74,28 +99,26 @@ const LoginPage = () => {
                         Reset Password
                     </Link>
                 </div>
-                {
-                    loginStatus === "completed" && loginError && (
-                        <Notif status={"fail"} text={loginError}/>
-                    )
-                }
 
-                {(loginStatus === "completed" || !loginStatus) && (
-                    <Button
-                        variant={'contained'}
-                        type="submit"
-                        id="submit-form"
-                        name="submit"
-                    >
-                        Log in
-                    </Button>
-                )}
-                {loginStatus === "pending" && (
-                    <LoadingSpinner/>
-                )}
+                <Button
+                    variant={'contained'}
+                    type="submit"
+                >
+                    {isLoading &&
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                             xmlns="http://www.w3.org/2000/svg"
+                             fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor"
+                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    }
+                    Log in
+                </Button>
             </form>
             {/*</AuthLayout>*/}
         </>
     );
-};
+}
 export default LoginPage;
