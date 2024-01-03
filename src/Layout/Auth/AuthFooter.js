@@ -2,7 +2,7 @@ import useHttp from "../../hooks/use-http";
 import {useContext, useRef, useState} from "react";
 import {useSelector} from "react-redux";
 import Modal from "../../components/UI/Modal";
-import CreateAccountForm from "./Forms/CreateAccountForm";
+import CreateAccountForm from "./Forms/CreateClientForm";
 import AuthContext from "../../store/auth-context";
 import CreatePanelForm from "./Forms/CreatePanelForm";
 import UploadFileForm from "./Forms/UploadFileForm";

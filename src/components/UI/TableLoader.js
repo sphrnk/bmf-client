@@ -4,7 +4,7 @@ const TableRowsLoader = ({rowsNum, cellsNum}) => {
     return [...Array(rowsNum)].map((row, index) => (
         <TableRow key={index}>
             {[...Array(cellsNum)].map((cell, index) => (
-                <TableCell component="th" scope="row">
+                <TableCell component="th" scope="row" key={index}>
                     <Skeleton animation="wave" variant="text"/>
                 </TableCell>
             ))}

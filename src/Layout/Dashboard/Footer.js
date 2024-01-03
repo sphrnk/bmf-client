@@ -2,7 +2,7 @@ import useHttp from "../../hooks/use-http";
 import {useContext, useRef, useState} from "react";
 import {useSelector} from "react-redux";
 import Modal from "../../components/UI/Modal";
-import CreateAccountForm from "../../components/Forms/CreateAccountForm";
+import CreateClientForm from "../../components/Clients/CreateClientForm";
 import AuthContext from "../../store/auth-context";
 import CreatePanelForm from "../../components/Forms/CreatePanelForm";
 import UploadFileForm from "../../components/Forms/UploadFileForm";
@@ -78,7 +78,7 @@ const Footer = () => {
                 </div>
             </footer>
             {showModal.createAccount && <Modal title={"Create Account"} onConfirm={showCreateAccountHandler}>
-                <CreateAccountForm onConfirm={showCreateAccountHandler}/>
+                <CreateClientForm onConfirm={showCreateAccountHandler}/>
             </Modal>}
 
             {showModal.uploadFile && <Modal title={"Upload File"} onConfirm={showUploadFileHandler}>

@@ -31,12 +31,10 @@ export const fetchClientsData = (requestData) => {
         }
         try {
             let data = await fetchRequest()
-            console.log(data);
             dispatch(clientActions.replaceClients({
                 clients: data.data.users,
             }))
         } catch (e) {
-            console.log(e);
             dispatch(uiActions.showNotification({
                 status: 'error',
                 message: 'Failed to load clients'
@@ -64,12 +62,10 @@ export const fetchClientData = (requestData) => {
         }
         try {
             let data = await fetchRequest()
-            console.log(data);
             // dispatch(clientActions.setClient({
             //     client: data.data.users,
             // }))
         } catch (e) {
-            console.log(e);
             dispatch(uiActions.showNotification({
                 status: 'error',
                 message: 'Failed to load client'
@@ -78,8 +74,7 @@ export const fetchClientData = (requestData) => {
     }
 }
 export const deleteClient = (requestData) => {
-    const {userId, token} = requestData;
-    console.log(requestData)
+    const {userId, token} = requestData
     return async (dispatch) => {
         dispatch(uiActions.showSpinnerLoading())
         const fetchRequest = async () => {
@@ -90,7 +85,6 @@ export const deleteClient = (requestData) => {
                     "Content-Type": "application/json",
                 },
             });
-            console.log("hi")
             if (response.status === 204) {
                 return {};
             }
@@ -100,14 +94,12 @@ export const deleteClient = (requestData) => {
         }
         try {
             let data = await fetchRequest()
-            console.log(data);
             dispatch(fetchClientsData({token}));
             dispatch(uiActions.showNotification({
                 status: 'success',
                 message: 'Client Removed Successfully!'
             }))
         } catch (e) {
-            console.log(e);
             dispatch(uiActions.showNotification({
                 status: 'error',
                 message: 'Failed to delete client'
@@ -117,7 +109,6 @@ export const deleteClient = (requestData) => {
 }
 export const resendEmail = (requestData) => {
     const {userId, token} = requestData;
-    console.log(requestData)
     return async (dispatch) => {
         dispatch(uiActions.showSpinnerLoading())
         const fetchRequest = async () => {
@@ -136,13 +127,11 @@ export const resendEmail = (requestData) => {
         }
         try {
             let data = await fetchRequest()
-            console.log(data);
             dispatch(uiActions.showNotification({
                 status: 'success',
                 message: 'Email Resend Successfully!'
             }))
         } catch (e) {
-            console.log(e);
             dispatch(uiActions.showNotification({
                 status: 'error',
                 message: 'Failed to Send Email to client'
@@ -154,7 +143,6 @@ export const updatePassword = (requestData) => {
     const {userId, token, password} = requestData;
 
     return async (dispatch) => {
-        console.log(token, password);
         dispatch(uiActions.showSpinnerLoading())
         const fetchRequest = async () => {
             const response = await fetch(`${DOMAIN}/users/updateTempPassword`, {
@@ -171,15 +159,12 @@ export const updatePassword = (requestData) => {
             const data = await response.json();
             if (!response.ok) {
                 // const error = await response.json();
-                console.log(response);
                 throw new Error(data.message || "Could not update the password.");
             }
             return data;
         }
         try {
-            console.log("hi12")
             const data = await fetchRequest();
-            console.log(data)
             const {user, token} = data.data;
             // dispatch(authActions.setCredentials({
             //     user, token
@@ -189,7 +174,6 @@ export const updatePassword = (requestData) => {
                 message: 'Password changed Successfully!'
             }))
         } catch (e) {
-            console.log(e);
             dispatch(uiActions.showNotification({
                 status: 'error',
                 message: 'Failed to change password. Try again later'

@@ -12,7 +12,7 @@ import {
     Typography
 } from "@mui/material";
 import Modal from "./UI/Modal";
-import CreateAccountForm from "./Forms/CreateAccountForm";
+import CreateClientForm from "./Clients/CreateClientForm";
 import React, {useState, useContext, useEffect} from "react";
 import useHttp from "../hooks/use-http";
 import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
@@ -157,7 +157,7 @@ const RequestInformation = (props) => {
                         {/*{createAccountModal &&*/}
                         {/*    <Modal open={createAccountModal} title={"Create Account"}*/}
                         {/*           onClose={closeCreateAccountModalHandler}>*/}
-                        {/*        <CreateAccountForm onClose={closeCreateAccountModalHandler} {...request}/>*/}
+                        {/*        <CreateClientForm onClose={closeCreateAccountModalHandler} {...request}/>*/}
                         {/*    </Modal>*/}
                         {/*}*/}
                         {cautionModal &&

@@ -6,9 +6,10 @@ const initialState = {
     pathObj: [{id: 1, name: 'Clients', path: '/'}],
     isUploading: false,
     notification: null,
+    selectedRows: [],
     createFolderModal: false,
     showUploadFileModal: false,
-    showMoveFileModal: false,
+    showMoveFile: false,
     isFileViewerOpen: false,
     file: null,
     excelFile: null,
@@ -28,7 +29,6 @@ const portalSlice = createSlice({
         },
         selectPath(state, action) {
             const newPath = state.pathObj.filter((path) => path.id <= action.payload.id)
-            console.log(newPath)
             state.pathObj = newPath;
         },
         replaceFiles(state, action) {
@@ -56,31 +56,15 @@ const portalSlice = createSlice({
         hideFileViewer(state) {
             state.isFileViewerOpen = false
         },
+        showMoveFileAction(state) {
+            state.showMoveFile = true
+        },
+        hideMoveFileAction(state) {
+            state.showMoveFile= false
+        },
 
-        showMoveFileModal(state) {
-            state.showMoveFileModal = true
-        },
-        hideMoveFileModal(state) {
-            state.showMoveFileModal = false
-        },
-        showCreateFolderModal(state) {
-            state.createFolderModal = true
-        },
-        hideCreateFolderModal(state) {
-            state.createFolderModal = false
-        },
-        showUploadFileModal(state) {
-            state.uploadFileModal = true
-        },
-        hideUploadFileModal(state) {
-            state.uploadFileModal = false
-        },
-        upOneLevel(state, action) {
-            state.pathObj.pop();
-        },
-        homePage(state) {
-            const firstPath = state.pathObj[0];
-            state.pathObj = [firstPath]
+        setSelectedRows(state, action) {
+            state.selectedRows = action.payload;
         }
     },
     // middleware: (getDefaultMiddleware)=> getDefaultMiddleware()

@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 html, body, #root {
-    height: 100%;
-    background-color: #f3f4f6
+    min-height: 100%;
+    /*background-color: #f3f4f6*/
 }
 
 /*.MuiDataGrid-columnHeader{*/
@@ -144,3 +144,7 @@ a.active > .glassmorphic {
 /*.MuiSelect-select {*/
 /*    padding: 8px 16px !important;*/
 /*}*/
+
+.MuiAlert-message {
+    width: 100%;
+}

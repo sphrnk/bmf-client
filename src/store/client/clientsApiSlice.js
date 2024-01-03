@@ -38,7 +38,6 @@ export const clientsApiSlice = apiSlice.injectEndpoints({
                 const loadedClients = responseData.data.users.map(client => {
                     return client;
                 })
-                console.log(loadedClients);
                 return clientsAdapter.setAll(initialState, loadedClients);
             },
             providesTags: (result, error, arg) => {
@@ -58,7 +57,7 @@ export const clientsApiSlice = apiSlice.injectEndpoints({
                     method: 'POST',
                     // credentials: 'include',
                     body,
-                    formData: true
+                    // formData: true
                 }
             }
         }),
@@ -76,7 +75,6 @@ export const clientsApiSlice = apiSlice.injectEndpoints({
         }),
         deleteClient: builder.mutation({
             query: (id) => {
-                console.log(id);
                 return {
                     url: `/users/${id}`,
                     method: 'DELETE',
@@ -90,7 +88,6 @@ export const clientsApiSlice = apiSlice.injectEndpoints({
         }),
         updateTempPassword: builder.mutation({
             query: (id) => {
-                console.log(id);
                 return {
                     url: `/users/updateTempPassword`,
                     method: 'PATCH',
@@ -102,16 +99,13 @@ export const clientsApiSlice = apiSlice.injectEndpoints({
                 }
             }
         }),
-        resendEmail: builder.query({
+        resendEmail: builder.mutation({
             query: (id) => {
                 console.log(id);
                 return {
                     url: `/users/${id}/resendEmail`,
-                    method: 'GET',
+                    method: 'POST',
                     // credentials: 'include',
-                    body: {
-                        id
-                    },
                     // formData: true
                 }
             }

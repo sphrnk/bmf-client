@@ -11,7 +11,7 @@ const PersistLogin = () => {
     const [persist] = usePersist()
     const token = useSelector(selectCurrentToken)
     const effectRan = useRef(false)
-
+    console.log(token);
     const [trueSuccess, setTrueSuccess] = useState(false)
 
     const [refresh, {
@@ -21,18 +21,18 @@ const PersistLogin = () => {
         isError,
         error
     }] = useRefreshMutation()
-    console.log("test:", !persist);
-
+    console.log(token, persist);
+    console.log(effectRan.current)
     useEffect(() => {
-
-        if (effectRan.current === true || process.env.NODE_ENV === 'development') { // React 18 Strict Mode
-
+        if (effectRan.current === true || process.env.NODE_ENV !== 'development') { // React 18 Strict Mode
+            console.log('koskesh')
             const verifyRefreshToken = async () => {
                 console.log('verifying refresh token')
                 try {
-                    //const response =
+                    // const response =
                     await refresh()
-                    //const { accessToken } = response.data
+                    // console.log(response);
+                    // const {accessToken} = response.data
                     setTrueSuccess(true)
                 } catch (err) {
                     console.error(err)
@@ -54,7 +54,7 @@ const PersistLogin = () => {
         content = <Outlet/>
     } else if (isLoading) { //persist: yes, token: no
         console.log('loading')
-        content = null
+        content = <p>loading...</p>
     } else if (isError) { //persist: yes, token: no
         console.log('error')
         content = (

@@ -33,7 +33,6 @@ const ClientsList = (props) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    console.log(props.clients)
     const columns = [
         {
             field: 'id',
@@ -81,7 +80,6 @@ const ClientsList = (props) => {
                             (c) => (thisRow[c.field] = params.getValue(params.id, c.field))
                         );
                     if (action === "delete") {
-                        console.log('client:', thisRow)
                         dispatch(deleteClient({
                             userId: thisRow.id,
                             token
@@ -89,7 +87,6 @@ const ClientsList = (props) => {
                         handleClose();
                     }
                     if (action === "resend-email") {
-                        console.log('client:', thisRow)
                         dispatch(resendEmail({
                             userId: thisRow.id,
                             token
@@ -127,7 +124,7 @@ const ClientsList = (props) => {
             <Table sx={{minWidth: 650}} aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <TableCell>ID</TableCell>
+                        {/*<TableCell>ID</TableCell>*/}
                         <TableCell>Full Name</TableCell>
                         <TableCell>Email</TableCell>
                         <TableCell>Phone Number</TableCell>

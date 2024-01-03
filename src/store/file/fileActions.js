@@ -1,5 +1,6 @@
 import {apiSlice} from "../api/apiSlice";
 import {createEntityAdapter, createSelector} from "@reduxjs/toolkit";
+import FileDownload from "js-file-download";
 
 const backendURL = process.env.REACT_APP_BACKEND_URL
 
@@ -8,6 +9,17 @@ const initialState = filesAdapter.getInitialState()
 
 export const filesApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
+        uploadFile: builder.mutation({
+            query: body => {
+                return {
+                    url: '/files/upload',
+                    method: 'POST',
+                    // credentials: 'include',
+                    body,
+                    formData: true
+                }
+            },
+        }),
         getFile: builder.query({
             query: (id) => ({
                 url: `/files/${id}`,
@@ -21,7 +33,6 @@ export const filesApiSlice = apiSlice.injectEndpoints({
                 const loadedFile = responseData.data.data.map(file => {
                     return file;
                 })
-                console.log(loadedFile);
 
                 return loadedFile;
             },
@@ -36,7 +47,6 @@ export const filesApiSlice = apiSlice.injectEndpoints({
         }),
         getFiles: builder.query({
             query: (body) => {
-                console.log(body);
                 return {
                     url: `/files/?path=${body.path}`,
                     // keepUnusedDataFor: 5,
@@ -46,16 +56,13 @@ export const filesApiSlice = apiSlice.injectEndpoints({
                 }
             },
             transformResponse: responseData => {
-                console.log(responseData);
-                const loadedFiles = responseData.data.files.map((file, id) => {
-                    file.id = id;
+                const loadedFiles = responseData.data.files.map((file) => {
                     return file;
                 })
-                console.log(loadedFiles);
                 return filesAdapter.setAll(initialState, loadedFiles);
             },
             providesTags: (result, error, arg) => {
-                console.log(result);
+
                 if (result?.ids) {
                     return [
                         {type: 'File', id: 'LIST'},
@@ -64,71 +71,60 @@ export const filesApiSlice = apiSlice.injectEndpoints({
                 } else return [{type: 'File', id: 'LIST'}]
             }
         }),
-        createFile: builder.mutation({
-            query: body => {
-                // console.log(body);
+        downloadFile: builder.query({
+            query: (path) => {
                 return {
-                    url: '/files/',
-                    method: 'POST',
-                    // credentials: 'include',
-                    body,
-                    formData: true
+                    url: `/files/download/?path=${path}`,
+                    method: 'GET',
+                    // responseHandler: async (response) => await response,
+                    validateStatus: (response, result) => {
+                        return (response.status === 200 || 304) && !result.error
+                    },
+                    responseType: 'blob',
                 }
-            }
-        }),
-        updateFile: builder.mutation({
-            query: data => ({
-                url: `/files/${data.id}`,
-                method: 'PATCH',
-                body: {
-                    ...data,
-                }
-            }),
-            invalidatesTags: (result, error, arg) => [
-                {type: 'File', id: arg.id}
-            ]
+            },
+            // transformResponse: (responseData, meta, arg) => {
+            //     console.log(responseData);
+            //     return responseData;
+            //     // FileDownload(responseData.data, requestData.fileName)
+            // },
         }),
         deleteFile: builder.mutation({
-            query: (id) => {
-                console.log(id);
+            query: (path) => {
                 return {
-                    url: `/files/${id}`,
+                    url: `/files/?path=${path}`,
                     method: 'DELETE',
                     // credentials: 'include',
+                    // formData: true
+                }
+            }
+        }),
+        createFolder: builder.mutation({
+            query: (body) => {
+                return {
+                    url: `/files/folders`,
+                    method: 'POST',
+                    // credentials: 'include',
                     body: {
-                        id
+                        folderName: body.folderName,
+                        path: body.path,
                     },
                     // formData: true
                 }
             }
         }),
-        updateTempPassword: builder.mutation({
-            query: (id) => {
-                console.log(id);
+        moveFile: builder.mutation({
+            query: (body) => {
+                // const {sourcePath, destinationPath} = body;
                 return {
-                    url: `/files/updateTempPassword`,
+                    url: `/files/move`,
                     method: 'PATCH',
-                    // credentials: 'include',
                     body: {
-                        id
+                        files: body,
                     },
-                    // formData: true
                 }
-            }
-        }),
-        resendEmail: builder.query({
-            query: (id) => {
-                console.log(id);
-                return {
-                    url: `/files/${id}/resendEmail`,
-                    method: 'GET',
-                    // credentials: 'include',
-                    body: {
-                        id
-                    },
-                    // formData: true
-                }
-            }
+            },
+            invalidatesTags: (result, error, {id}) => [{type: 'Files', id}],
         }),
     })
 })
@@ -136,10 +132,10 @@ export const filesApiSlice = apiSlice.injectEndpoints({
 export const {
     useGetFilesQuery,
     useGetFileQuery,
-    useResendEmailMutation,
-    useUpdateTempPasswordMutation,
-    useCreateFileMutation,
-    useUpdateFileMutation,
+    useMoveFileMutation,
+    useCreateFolderMutation,
+    useUploadFileMutation,
+    useDownloadFileQuery,
     useDeleteFileMutation
 } = filesApiSlice
 

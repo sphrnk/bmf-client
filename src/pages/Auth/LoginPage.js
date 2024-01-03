@@ -1,7 +1,7 @@
 import LoginForm from "../../components/Forms/LoginForm";
 import AuthLayout from "../../Layout/Auth/AuthLayout";
 import {Link as RouterLink, useNavigate} from "react-router-dom";
-import {Button, Link, TextField, Typography} from "@mui/material";
+import {Button, Checkbox, FormControlLabel, Link, TextField, Typography} from "@mui/material";
 import {useContext, useEffect, useRef} from "react";
 import AuthContext from "../../store/auth-context";
 import useHttp from "../../hooks/use-http";
@@ -12,7 +12,8 @@ import {login} from "../../lib/api/auth";
 import {uiActions} from "../../store/ui-slice";
 import {useDispatch, useSelector} from "react-redux";
 import {setCredentials} from "../../store/auth/authSlice";
-import {useLoginMutation} from "../../store/auth/authActions";
+import {useLoginMutation} from "../../store/auth/authApiSlice";
+import usePersist from "../../hooks/usePersist";
 
 
 const LoginPage = () => {
@@ -23,6 +24,7 @@ const LoginPage = () => {
     const navigate = useNavigate();
     const emailInputRef = useRef();
     const passwordInputRef = useRef();
+    const [persist, setPersist] = usePersist()
     const [login, {isLoading, isSuccess, isError, error}] = useLoginMutation()
     useEffect(() => {
         emailInputRef.current.focus();
@@ -31,12 +33,22 @@ const LoginPage = () => {
         event.preventDefault();
         const enteredEmail = emailInputRef.current.value;
         const enteredPassword = passwordInputRef.current.value;
-        const data = await login({email: enteredEmail, password: enteredPassword}).unwrap()
-        console.log(data);
-        dispatch(setCredentials({...data}))
+        const loginData = await login({email: enteredEmail, password: enteredPassword}).unwrap()
+        dispatch(setCredentials({...loginData}))
+        console.log('Login loginData:', loginData);
+        const {user, token} = loginData.data;
+        const remainingMilliseconds = 60 * 60 * 1000;
+        const expiryDate = new Date(
+            new Date().getTime() + remainingMilliseconds
+        );
+        authCtx.login(user, token, expiryDate);
+
     }
-    // localStorage.setItem('userToken', data.token) // deletes token from storage
-    // localStorage.setItem('userInfo', JSON.stringify(data.user)) // deletes token from storage}
+    const handlePersist = () => {
+        setPersist(prev => !prev)
+    }
+    // localStorage.setItem('userToken', loginData.token) // deletes token from storage
+    // localStorage.setItem('userInfo', JSON.stringify(loginData.user)) // deletes token from storage}
     useEffect(() => {
         if (isSuccess) {
             navigate('/')
@@ -62,7 +74,7 @@ const LoginPage = () => {
             } else {
                 dispatch(uiActions.showNotification({
                     status: 'error',
-                    message: error
+                    message: error.data.message
                 }))
             }
         }
@@ -92,14 +104,15 @@ const LoginPage = () => {
                 <TextField required variant="standard" inputRef={passwordInputRef} label={"Password"}
                            type={"password"}/>
 
-                <div className="w-full flex gap-3">
+                <div className="w-full items-baseline flex-col sm:flex-row flex gap-3">
                     <Typography component={'span'} variant={'body2'} className="text-gray-600">Forgot
                         password?</Typography>
-                    <Link component={RouterLink} to={"/forgot-password"}>
+                    <Link component={RouterLink} underline={'hover'} to={"/forgot-password"}>
                         Reset Password
                     </Link>
                 </div>
-
+                <FormControlLabel control={<Checkbox checked={persist} onChange={handlePersist}/>}
+                                  label="TRUST THIS DEVICE"/>
                 <Button
                     variant={'contained'}
                     type="submit"

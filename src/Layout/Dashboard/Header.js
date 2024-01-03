@@ -3,31 +3,39 @@ import AuthContext from "../../store/auth-context";
 import {Link} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {uiActions} from "../../store/ui-slice";
-import {AppBar, IconButton, ListItemIcon, Menu, MenuItem, styled, Toolbar, Typography} from "@mui/material";
+import {
+    AppBar,
+    Icon,
+    IconButton,
+    ListItemIcon,
+    Menu,
+    MenuItem,
+    styled,
+    Toolbar,
+    Typography,
+    useTheme
+} from "@mui/material";
 import {logout} from "../../store/auth/authSlice";
+import React from "react";
 
 const drawerWidth = 240;
 const MuiAppBar = styled(AppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
 })(({theme, sidebarState}) => ({
-    background: '#fff',
-    color: theme.palette.primary.main,
-    zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
+    transition: theme.transitions.create(['margin', 'width'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
     }),
     ...(sidebarState && {
-        marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
+        // width: `calc(100% - ${drawerWidth}px)`,
+        // marginLeft: `${drawerWidth}px`,
+        transition: theme.transitions.create(['margin', 'width'], {
+            easing: theme.transitions.easing.easeOut,
             duration: theme.transitions.duration.enteringScreen,
         }),
     }),
 }));
-
-const Header = () => {
+const Header = ({toggleTheme}) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const {sidebarState} = useSelector((state) => state.ui);
@@ -45,9 +53,10 @@ const Header = () => {
         dispatch(logout())
     }
 
-
+    const theme = useTheme();
+    const isDarkMode = theme.palette.mode === 'dark';
     return (
-        <MuiAppBar position="fixed" sidebarState={sidebarState}>
+        <MuiAppBar position="fixed" sidebarState={sidebarState} color={'primary'} enableColorOnDark>
             <Toolbar className={"justify-between"}>
                 <div className={"items-center flex"}>
                     <IconButton
@@ -68,17 +77,23 @@ const Header = () => {
                 {/*    src={process.env.PUBLIC_URL + `/images/logo/logo.png`}*/}
                 {/*    alt=""*/}
                 {/*/>*/}
-                <div aria-controls={open ? 'account-menu' : undefined}
-                     aria-haspopup="true"
-                     aria-expanded={open ? 'true' : undefined} onClick={handleClick}
-                     className="flex items-center rounded-full cursor-pointer w-12 h-12 border-neutral-800 border-2 overflow-hidden">
-                    <img
-                        src={process.env.PUBLIC_URL + `/images/default-profile.png`}
-                        className="object-fill"
-                        alt=""
-                    />
+                <div className={'flex justify-center items-center gap-4'}>
+                    <Icon onClick={toggleTheme}
+                          baseClassName="fat"
+                          className={isDarkMode ? "text-white fa-moon cursor-pointer" : "text-white fa-sharp fa-thin fa-sun-bright cursor-pointer"}/>
+                    {/*<div></div>*/}
+                    <div aria-controls={open ? 'account-menu' : undefined}
+                         aria-haspopup="true"
+                         aria-expanded={open ? 'true' : undefined} onClick={handleClick}
+                         className="flex items-center rounded-full cursor-pointer w-12 h-12 border-neutral-800 border-2 overflow-hidden">
+                        <img
+                            src={process.env.PUBLIC_URL + `/images/default-profile.png`}
+                            className="object-fill"
+                            alt=""
+                        />
+                    </div>
+                    {/*<i className="fa-regular fa-angle-down"></i>*/}
                 </div>
-                {/*<i className="fa-regular fa-angle-down"></i>*/}
                 <Menu
                     anchorEl={anchorEl}
                     id="account-menu"

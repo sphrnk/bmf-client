@@ -17,7 +17,6 @@ export async function getUsers(requestData) {
         },
     });
     const data = await response.json();
-    console.log(data);
     if (!response.ok) {
         throw new Error(data.message || "Could not fetch Users.");
     }
@@ -26,7 +25,6 @@ export async function getUsers(requestData) {
 }
 
 export async function getUser(requestData) {
-    console.log(requestData)
     const response = await fetch(`${DOMAIN}/users/${requestData.clientId}`, {
         method: "GET",
         headers: {
@@ -35,18 +33,15 @@ export async function getUser(requestData) {
         },
     });
     const data = await response.json();
-    console.log(data);
     if (!response.ok) {
         throw new Error(data.message || "Could not fetch User.");
     }
-    console.log(data)
     const {id, ...rest} = data.data.user;
     data.data.user = rest;
     return data;
 }
 
 export async function createUser(requestData) {
-    console.log(requestData);
     const response = await fetch(`${DOMAIN}/users/`, {
         method: "POST",
         body: JSON.stringify({
@@ -64,16 +59,13 @@ export async function createUser(requestData) {
         },
     });
     const data = await response.json();
-    console.log(data);
     if (!response.ok) {
-        console.log(data);
         throw new Error(data.message || "Could not create Account.");
     }
     return data;
 }
 
 export async function updateUser(requestData) {
-    console.log(requestData);
     const response = await fetch(`${DOMAIN}/users/${requestData.clientId}`, {
         method: "PATCH",
         body: JSON.stringify({
@@ -93,16 +85,13 @@ export async function updateUser(requestData) {
         },
     });
     const data = await response.json();
-    console.log(data);
     if (!response.ok) {
-        console.log(data);
         throw new Error(data.message || "Could not create Account.");
     }
     return data;
 }
 
 export async function deleteUser(requestData) {
-    console.log(requestData);
     const response = await fetch(`${DOMAIN}/users/createAccount`, {
         method: "POST",
         body: JSON.stringify({
@@ -118,9 +107,7 @@ export async function deleteUser(requestData) {
         },
     });
     const data = await response.json();
-    console.log(data);
     if (!response.ok) {
-        console.log(data);
         throw new Error(data.message || "Could not create Account.");
     }
     return data;

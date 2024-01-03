@@ -13,9 +13,7 @@ const DOMAIN = process.env.REACT_APP_BACKEND_URL;
 
 export const fetchFilesData = (requestData) => {
     return async (dispatch) => {
-        console.log(DOMAIN)
         dispatch(uiActions.showSpinnerLoading())
-        console.log(requestData)
         const fetchRequest = async () => {
             const response = await fetch(`${DOMAIN}/files?path=${requestData.path}`, {
                 method: "GET",
@@ -32,7 +30,6 @@ export const fetchFilesData = (requestData) => {
         try {
             let data = await fetchRequest()
             data.data.files.map((file, i) => file.id = i)
-            console.log(data);
             dispatch(portalActions.replaceFiles({
                 files: data.data.files,
             }))
@@ -47,9 +44,7 @@ export const fetchFilesData = (requestData) => {
 
 export const fetchImgFileData = (requestData) => {
     return async (dispatch) => {
-        console.log(DOMAIN)
         dispatch(uiActions.showSpinnerLoading())
-        console.log(requestData)
         const fetchRequest = async () => {
             const response = await fetch(`${DOMAIN}/files/view?path=${requestData.path}`, {
                 method: "GET",
@@ -77,9 +72,7 @@ export const fetchImgFileData = (requestData) => {
 }
 export const fetchFileData = (requestData) => {
     return async (dispatch) => {
-        console.log(DOMAIN)
         dispatch(uiActions.showSpinnerLoading())
-        console.log(requestData)
         const fetchRequest = async () => {
             const response = await fetch(`${DOMAIN}/files/view?path=${requestData.path}`, {
                 method: "GET",
@@ -95,7 +88,6 @@ export const fetchFileData = (requestData) => {
         }
         try {
             let data = await fetchRequest()
-            console.log(data);
             const imgUrl = URL.createObjectURL(data);
             dispatch(portalActions.setFile(imgUrl))
         } catch (e) {
@@ -108,9 +100,7 @@ export const fetchFileData = (requestData) => {
 }
 export const fetchPDFFileData = (requestData) => {
     return async (dispatch) => {
-        console.log(DOMAIN)
         dispatch(uiActions.showSpinnerLoading())
-        console.log(requestData)
         const fetchRequest = async () => {
             const response = await fetch(`${DOMAIN}/files/view?path=${requestData.path}`, {
                 method: "GET",
@@ -126,7 +116,6 @@ export const fetchPDFFileData = (requestData) => {
         }
         try {
             let data = await fetchRequest()
-            console.log("data:", data)
             const pdfUrl = URL.createObjectURL(data);
             dispatch(portalActions.setPDFFile(pdfUrl))
         } catch (e) {
@@ -139,9 +128,7 @@ export const fetchPDFFileData = (requestData) => {
 }
 export const fetchTxtFileData = (requestData) => {
     return async (dispatch) => {
-        console.log(DOMAIN)
         dispatch(uiActions.showSpinnerLoading())
-        console.log(requestData)
         const fetchRequest = async () => {
             const response = await fetch(`${DOMAIN}/files/view?path=${requestData.path}`, {
                 method: "GET",
@@ -157,7 +144,6 @@ export const fetchTxtFileData = (requestData) => {
         }
         try {
             let data = await fetchRequest()
-            console.log('data: ', data)
             dispatch(portalActions.setTxtFile(data))
         } catch (e) {
             dispatch(uiActions.showNotification({
@@ -169,9 +155,7 @@ export const fetchTxtFileData = (requestData) => {
 }
 export const fetchExcelFileData = (requestData) => {
     return async (dispatch) => {
-        console.log(DOMAIN)
         dispatch(uiActions.showSpinnerLoading())
-        console.log(requestData)
         // if (requestData.img)
         const f = await (await fetch(`${DOMAIN}/files/view?path=${requestData.path}`, {
             method: "GET",
@@ -181,7 +165,6 @@ export const fetchExcelFileData = (requestData) => {
             },
         })).arrayBuffer()
         const wb = read(f);
-        console.log(wb);
         const data = utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
         // console.log(data);
 
@@ -191,7 +174,6 @@ export const fetchExcelFileData = (requestData) => {
 export const createFolder = (requestData) => {
     return async (dispatch) => {
         const {userId, token, folderName, pathObj} = requestData
-        console.log(pathObj[pathObj.length - 1].path)
         dispatch(uiActions.showSpinnerLoading())
         const fetchRequest = async () => {
             const response = await fetch(`${DOMAIN}/files/folders`, {
@@ -206,7 +188,6 @@ export const createFolder = (requestData) => {
                     "Content-Type": "application/json",
                 },
             });
-            console.log(DOMAIN);
             if (!response.ok) {
                 throw new Error("Could not create Folder.");
             }
@@ -214,7 +195,6 @@ export const createFolder = (requestData) => {
         }
         try {
             const data = await fetchRequest()
-            console.log(data);
             dispatch(fetchFilesData({token, userId, path: pathObj[pathObj.length - 1].path}));
             dispatch(uiActions.showNotification({
                 status: 'success',
@@ -232,10 +212,9 @@ export const createFolder = (requestData) => {
 export const moveFile = (requestData) => {
     return async (dispatch) => {
         const {userId, token, folderName, pathObj} = requestData
-        console.log(pathObj[pathObj.length - 1].path)
         dispatch(uiActions.showSpinnerLoading())
         const fetchRequest = async () => {
-            const response = await fetch(`${DOMAIN}/files/folders`, {
+            const response = await fetch(`${DOMAIN}/files/move`, {
                 method: "POST",
                 body: JSON.stringify({
                     userId: userId,
@@ -247,7 +226,6 @@ export const moveFile = (requestData) => {
                     "Content-Type": "application/json",
                 },
             });
-            console.log(DOMAIN);
             if (!response.ok) {
                 throw new Error("Could not create Folder.");
             }
@@ -255,7 +233,6 @@ export const moveFile = (requestData) => {
         }
         try {
             const data = await fetchRequest()
-            console.log(data);
             dispatch(fetchFilesData({token, userId, path: pathObj[pathObj.length - 1].path}));
             dispatch(uiActions.showNotification({
                 status: 'success',
@@ -281,7 +258,6 @@ export const downloadFile = (requestData) => {
                 "Authorization": 'Bearer ' + requestData.token,
             }
         }).then((res) => {
-            console.log(res);
             FileDownload(res.data, requestData.fileName)
         })
     }
@@ -289,10 +265,8 @@ export const downloadFile = (requestData) => {
 
 export const uploadFile = (requestData) => {
     return async (dispatch) => {
-        console.log(requestData)
         const {userId, token, files, pathObj} = requestData
         const lastPath = pathObj[pathObj.length - 1].path
-        console.log(pathObj[pathObj.length - 1].path)
         dispatch(portalActions.setIsUploading(true))
 
         const fetchRequest = async () => {
