@@ -27,6 +27,12 @@ const lightTheme = createTheme({
     // typography: {
     //
     // }
+    mixins: {
+        toolbar: {
+            minHeight: 56,
+            height: 86,
+        }
+    },
     components: {
         MuiIcon: {
             styleOverrides: {

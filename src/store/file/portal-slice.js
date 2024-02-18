@@ -10,6 +10,7 @@ const initialState = {
     createFolderModal: false,
     showUploadFileModal: false,
     showMoveFile: false,
+    showRenameAction: false,
     isFileViewerOpen: false,
     file: null,
     excelFile: null,
@@ -30,6 +31,12 @@ const portalSlice = createSlice({
         selectPath(state, action) {
             const newPath = state.pathObj.filter((path) => path.id <= action.payload.id)
             state.pathObj = newPath;
+        },
+        showRenameAction(state) {
+            state.showRenameAction = true
+        },
+        hideRenameAction(state) {
+            state.showRenameAction = false
         },
         replaceFiles(state, action) {
             state.files = action.payload.files
@@ -60,9 +67,8 @@ const portalSlice = createSlice({
             state.showMoveFile = true
         },
         hideMoveFileAction(state) {
-            state.showMoveFile= false
+            state.showMoveFile = false
         },
-
         setSelectedRows(state, action) {
             state.selectedRows = action.payload;
         }

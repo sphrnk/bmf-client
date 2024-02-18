@@ -6,7 +6,7 @@ import FirstTimeChangePasswordForm from "../../components/Forms/FirstTimeChangeP
 const TempPasswordPage = () => {
     return (
         <>
-            <Typography variant={'h2'} component={'h2'}>
+            <Typography variant={'h3'} component={'h3'}>
                 Change Current Temp Password
             </Typography>
             <Typography mt={1} variant={'body1'}>

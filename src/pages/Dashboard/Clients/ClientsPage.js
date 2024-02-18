@@ -25,7 +25,7 @@ const ClientsPage = () => {
     return (
         <>
             <div className="flex flex-col sm:flex-row items-center justify-between mb-4 gap-4">
-                <Typography color={'primary'} variant={'h1'}>Clients</Typography>
+                <Typography color={'primary'} variant={'h3'} fontWeight={"bold"}>Clients</Typography>
                 <Link component={RouterLink} to={'/clients/add'} underline={"none"}>
                     <Button className={'w-auto'} variant="contained">Add
                         Client

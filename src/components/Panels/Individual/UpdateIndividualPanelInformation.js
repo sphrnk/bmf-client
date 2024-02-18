@@ -1,11 +1,17 @@
 import Select from "../../Forms/UI/Select";
 import InfoItem from "../../UI/InfoItem";
-import {InputAdornment, TextField, Typography} from "@mui/material";
+import {Button, InputAdornment, TextField, Typography} from "@mui/material";
 import React, {useState, useEffect, useRef} from "react";
 import useHttp from "../../../hooks/use-http";
 import {IMaskInput} from "react-imask";
 import PropTypes from "prop-types";
 import {validateZipCode} from "../../../lib/utils";
+import Address from "../Address";
+import {useUpdateIndividualPanelMutation} from "../../../store/panel/panelApiSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {selectCurrentUser} from "../../../store/auth/authSlice";
+import {uiActions} from "../../../store/ui-slice";
+import {useNavigate} from "react-router-dom";
 
 const phoneTextMaskCustom = React.forwardRef(function TextMaskCustom(props, ref) {
     const {onChange, ...other} = props;
@@ -28,8 +34,10 @@ phoneTextMaskCustom.propTypes = {
     onChange: PropTypes.func.isRequired,
 };
 const UpdateIndividualPanelInformation = (props) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const user = useSelector(selectCurrentUser);
     const {panel} = props
-    console.log(props);
     const [formattedInputValues, setFormattedInputValues] = useState({
         phoneNumber: '',
     })
@@ -49,31 +57,23 @@ const UpdateIndividualPanelInformation = (props) => {
                 phoneNumber: panel.phoneNumber,
             }
         })
-    }, [props])
-    const {
-        sendRequest: sendZipCodeRequest,
-        status: zipCodeStatus,
-        data: zipCodeData,
-        error: zipCodeErr
-    } = useHttp(validateZipCode);
+        firstNameInputRef.current.value = panel.firstName;
+        middleNameInputRef.current.value = panel.middleName;
+        lastNameInputRef.current.value = panel.lastName;
+        emailInputRef.current.value = panel.email;
+        zipCodeInputRef.current.value = panel.address.zipCode;
+        addressLineInputRef.current.value = panel.address.addressLine;
+        aptInputRef.current.value = panel.address.apt;
+        cityInputRef.current.value = panel.address.city;
+        stateInputRef.current.value = panel.address.state;
+    }, [panel])
     const zipCodeInputRef = useRef();
     const addressLineInputRef = useRef();
     const aptInputRef = useRef();
     const cityInputRef = useRef();
     const stateInputRef = useRef();
-    const zipCodeHandler = async () => {
-        const enteredZipCode = zipCodeInputRef.current.value;
-        // console.log(enteredZipCode);
-        if (enteredZipCode.length === 5) {
-            await sendZipCodeRequest({enteredZipCode});
-        }
-    }
-    if (zipCodeStatus === "completed" && zipCodeData && !zipCodeErr) {
-        cityInputRef.current.value = zipCodeData.data.code[0];
-        stateInputRef.current.value = zipCodeData.data.code[1];
-    }
-    const submitFormHandler = async (e) => {
-        e.preventDefault();
+    const [updateIndividualPanel, {isLoading, isSuccess, isError, error}] = useUpdateIndividualPanelMutation();
+    const updatePanelHandler = async (e) => {
         const enteredFirstName = firstNameInputRef.current.value;
         const enteredMiddleName = middleNameInputRef.current.value;
         const enteredLastName = lastNameInputRef.current.value;
@@ -84,46 +84,57 @@ const UpdateIndividualPanelInformation = (props) => {
         const enteredApt = aptInputRef.current.value;
         const enteredCity = cityInputRef.current.value;
         const enteredState = stateInputRef.current.value;
-        const portalType = "individual"
-        props.onSubmit({
-            panelData: {
-                enteredFirstName,
-                enteredMiddleName,
-                enteredLastName,
-                enteredEmail,
-                enteredPhoneNumber
-            },
+
+        const data = {
+            firstName: enteredFirstName,
+            middleName: enteredMiddleName,
+            lastName: enteredLastName,
+            email: enteredEmail,
+            phoneNumber: enteredPhoneNumber,
             address: {
-                zipCode: enteredZipCode,
-                addressLine: enteredAddressLine,
                 apt: enteredApt,
                 city: enteredCity,
                 state: enteredState,
+                zipCode: enteredZipCode,
+                addressLine: enteredAddressLine,
             },
-            portalType
-        });
+            panelId: panel.id,
+            userId: user.id,
+        }
+        await updateIndividualPanel(data);
     }
+    useEffect(() => {
+        if (isSuccess) {
+            dispatch(uiActions.showNotification({
+                status: 'success',
+                message: 'Client Panel Updated Successfully!'
+            }))
+            navigate('/clients')
+        } else if (isError) {
+            dispatch(uiActions.showNotification({
+                status: 'error',
+                message: error.data.message
+            }))
+        }
+    }, [isError, isSuccess, error])
     return (
         <div className={"flex flex-col gap-4"}>
             <div className={"grid grid-cols-1 lg:grid-cols-3 mb-4 gap-4"}>
                 <TextField
                     label="First Name"
                     required
-                    // inputRef={firstNameInputRef}
+                    inputRef={firstNameInputRef}
                     type={'text'}
-                    value={panel.firstName}
                 />
                 <TextField
                     label="Middle Name"
-                    // inputRef={middleNameInputRef}
+                    inputRef={middleNameInputRef}
                     type={'text'}
-                    value={panel.middleName}
                 />
                 <TextField
                     label="Last Name"
                     required
-                    // inputRef={lastNameInputRef}
-                    value={panel.lastName}
+                    inputRef={lastNameInputRef}
                     type={'text'}
                 />
             </div>
@@ -131,9 +142,8 @@ const UpdateIndividualPanelInformation = (props) => {
                 <TextField
                     label="Email Address"
                     required
-                    // inputRef={emailInputRef}
+                    inputRef={emailInputRef}
                     type={'email'}
-                    value={panel.email}
                     InputProps={{
                         startAdornment: <InputAdornment position="start"><i
                             className="fa-regular fa-envelope"></i></InputAdornment>,
@@ -154,70 +164,18 @@ const UpdateIndividualPanelInformation = (props) => {
                     }}
                 />
             </div>
-            <Typography component={'h1'} variant={'h5'} fontWeight={'bold'} gutterBottom>
-                Address:
-            </Typography>
-            <div className={"grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4"}>
-                <TextField
-                    label="Zip Code"
-                    required
-                    // onKeyUp={zipCodeHandler}
-                    // inputRef={zipCodeInputRef}
-                    value={panel.address.zipCode}
-                    type={'text'}
-                />
-                <TextField
-                    label="City"
-                    required
-                    // inputRef={cityInputRef}
-                    disabled
-                    value={panel.address.city}
-                    type={'text'}
-                    InputProps={{
-                        startAdornment: <InputAdornment position="start"><i
-                            className="fa-regular fa-city"></i></InputAdornment>,
-                    }}
-                />
-                <TextField
-                    label="State"
-                    required
-                    // inputRef={stateInputRef}
-                    value={panel.address.state}
-                    disabled
-                    type={'text'}
-                    InputProps={{
-                        startAdornment: <InputAdornment position="start"><i
-                            className="fa-regular fa-flag-usa"></i></InputAdornment>,
-                    }}
-                />
-
-            </div>
-            <div className={"grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4"}>
-                <TextField
-                    label="Address Line"
-                    required
-                    className={"col-span-8"}
-                    // inputRef={addressLineInputRef}
-                    type={'text'}
-                    value={panel.address.addressLine}
-                    InputProps={{
-                        startAdornment: <InputAdornment position="start"><i
-                            className="fa-regular fa-location-dot"></i></InputAdornment>,
-                    }}
-                />
-                <TextField
-                    label="Apt"
-                    className={"col-span-4"}
-                    // inputRef={aptInputRef}
-                    type={'text'}
-                    value={panel.address.apt}
-                    InputProps={{
-                        startAdornment: <InputAdornment position="start"><i
-                            className="fa-regular fa-building"></i></InputAdornment>,
-                    }}
-                />
+            <Address ref={{
+                zipCodeInputRef: zipCodeInputRef,
+                cityInputRef: cityInputRef,
+                stateInputRef: stateInputRef,
+                addressLineInputRef: addressLineInputRef,
+                aptInputRef: aptInputRef
+            }}/>
+            <div className={'flex justify-end gap-4'}>
+                {/*<Button variant={'text'}>Cancel</Button>*/}
+                <Button onClick={updatePanelHandler} variant={'contained'}>Update Panel</Button>
             </div>
         </div>
     )
 }
-export default IndividualPanelInformation
+export default UpdateIndividualPanelInformation

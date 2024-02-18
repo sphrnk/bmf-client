@@ -19,6 +19,7 @@ import {updateUser} from "../../lib/api/users";
 import {useDispatch} from "react-redux";
 import {uiActions} from "../../store/ui-slice";
 import {useNavigate} from "react-router-dom";
+import {useUpdateClientMutation} from "../../store/client/clientsApiSlice";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -49,10 +50,9 @@ phoneTextMaskCustom.propTypes = {
     name: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
 };
-const ClientInformation = ({user}) => {
+const UpdateClientInformation = ({user}) => {
 
     const clientId = user._id
-    const [profileChangedStatus, setProfileChangedStatus] = useState(false);
     const createdAt = new Date(user.createdAt).toLocaleDateString("en-US");
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -74,13 +74,16 @@ const ClientInformation = ({user}) => {
         emailInputRef.current.value = user.email;
         individualPortalCountInputRef.current.value = user.individualPortalCount;
         businessPortalCountInputRef.current.value = user.businessPortalCount;
-        if (user.businessPortal){
-            setPortalAccess(prevState => [...prevState, 'business'])
+        if (user.businessPortal) {
+            if (!portalAccess.includes('business'))
+                setPortalAccess(prevState => [...prevState, 'business'])
         }
-        if (user.individualPortal){
-            setPortalAccess(prevState => [...prevState, 'individual'])
+        if (user.individualPortal) {
+            if (!portalAccess.includes('individual'))
+                setPortalAccess(prevState => [...prevState, 'individual'])
         }
     }, [user])
+    const [updateClient, {isLoading, isSuccess, isError, error}] = useUpdateClientMutation();
     const changePortalAccessHandler = (event) => {
         const {
             target: {value},
@@ -89,7 +92,6 @@ const ClientInformation = ({user}) => {
             // On autofill we get a stringified value.
             typeof value === 'string' ? value.split(',') : value,
         );
-        setProfileChangedStatus(true);
     }
     const formattedInputChangeHandler = (event) => {
         setFormattedInputValues({
@@ -100,18 +102,44 @@ const ClientInformation = ({user}) => {
     const editProfile = async () => {
         const individualPortal = portalAccess.includes('individual');
         const businessPortal = portalAccess.includes('business');
-        // await updateUserRequest({
-        //     ...inputValues, ...formattedInputValues,
-        //     individualPortal,
-        //     businessPortal,
-        //     clientId,
-        //     token: props.token
-        // })
+        const enteredFirstNameInputRef = firstNameInputRef.current.value;
+        const enteredMiddleNameInputRef = middleNameInputRef.current.value;
+        const enteredLastNameInputRef = lastNameInputRef.current.value;
+        const enteredEmailInputRef = emailInputRef.current.value;
+        const enteredIndividualPortalCountInputRef = individualPortalCountInputRef.current.value;
+        const enteredBusinessPortalCountInputRef = businessPortalCountInputRef.current.value;
+        const data = {
+            firstName: enteredFirstNameInputRef,
+            middleName: enteredMiddleNameInputRef,
+            lastName: enteredLastNameInputRef,
+            email: enteredEmailInputRef,
+            phoneNumber: formattedInputValues.phoneNumber,
+            individualPortal,
+            businessPortal,
+            individualPortalCount: enteredIndividualPortalCountInputRef,
+            businessPortalCount: enteredBusinessPortalCountInputRef,
+            id: clientId,
+        }
+        await updateClient(data)
     }
+    useEffect(() => {
+        if (isSuccess) {
+            dispatch(uiActions.showNotification({
+                status: 'success',
+                message: 'Client Updated Successfully!'
+            }))
+            navigate('/clients');
+        } else if (isError) {
+            dispatch(uiActions.showNotification({
+                status: 'error',
+                message: error.data.message
+            }))
+        }
+    }, [isError, isSuccess, error])
     return (
         <>
             <div className="grid gap-6">
-                <div className="grid grid-cols-1 xl:grid-cols-4 gap-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12">
                     <TextField
                         label="First Name"
                         required
@@ -181,6 +209,7 @@ const ClientInformation = ({user}) => {
                     <TextField
                         label="Number of Individual Portals"
                         required
+                        InputProps={{inputProps: {min: 0}}}
                         name="individualPortalCount"
                         inputRef={individualPortalCountInputRef}
                         type={'number'}
@@ -188,6 +217,7 @@ const ClientInformation = ({user}) => {
                     <TextField
                         label="Number of Business Portals"
                         required
+                        InputProps={{inputProps: {min: 0}}}
                         // ref={companyPhoneNumberInputRef}
                         name="businessPortalCount"
                         inputRef={businessPortalCountInputRef}
@@ -195,8 +225,12 @@ const ClientInformation = ({user}) => {
                     />
                     {/*<InfoItem editable={true} title={"Permissions"}*/}
                     {/*          text={"File Manager, Chat, Filling Forms, Meeting"}/>*/}
-                    <div
-                        className="flex justify-between">
+
+
+                </div>
+                <div
+                    className="flex flex-col lg:flex-row justify-between gap-6">
+                    <div className={'flex flex-col lg:flex-row justify-center gap-12'}>
                         <div className="flex flex-col gap-1">
                             <h6 className={""}>Created At:</h6>
                             <span className="text-gray-400">
@@ -210,12 +244,8 @@ const ClientInformation = ({user}) => {
                                 </span>
                         </div>
                     </div>
-                    <div
-                        className="flex justify-end gap-4">
-                        <Button disabled={profileChangedStatus === false} variant={"text"}>
-                            Cancel
-                        </Button>
-                        <Button onClick={editProfile} disabled={profileChangedStatus === false}
+                    <div className="flex flex-col lg:flex-row justify-end gap-4">
+                        <Button onClick={editProfile}
                                 variant={"contained"}>
                             Update Profile
                         </Button>
@@ -225,4 +255,4 @@ const ClientInformation = ({user}) => {
         </>
     )
 }
-export default ClientInformation;
+export default UpdateClientInformation;

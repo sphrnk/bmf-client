@@ -102,7 +102,7 @@ const FileItem = ({selection, fileId, isSelected, onClick}) => {
             if (file.type || !selection) {
                 return;
             }
-            onClick(file.filePath)
+            onClick(file, file.filePath)
         }
         const isItemSelected = isSelected(file.filePath);
         const labelId = `enhanced-table-checkbox-${fileId}`;

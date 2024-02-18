@@ -21,6 +21,7 @@ import GoHomeAction from "./Actions/HomeAction";
 import ReloadAction from "./Actions/ReloadAction";
 import MoveAction from "./Actions/MoveAction";
 import CreateFolder from "./CreateFolder";
+import RenameAction from "./Actions/RenameAction";
 
 const FileExplorerActions = (props) => {
     const {isLoading, isSuccess, list} = props;
@@ -59,6 +60,7 @@ const FileExplorerActions = (props) => {
                     <GoHomeAction/>
                     <ReloadAction/>
                     <MoveAction/>
+                    <RenameAction/>
                 </div>
                 <div className={'flex gap-6 items-center'}>
                     <CreateFolder/>

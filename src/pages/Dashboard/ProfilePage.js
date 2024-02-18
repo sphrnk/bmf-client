@@ -21,12 +21,12 @@ const ProfilePage = () => {
     return (
         <div className={'flex flex-col'}>
             <div className="flex flex-col gap-4 mb-8">
-                <Typography color={'primary'} variant={'h1'} component={'h1'} fontWeight={'bold'}>Your
+                <Typography color={'primary'} variant={'h3'} component={'h3'} fontWeight={'bold'}>Your
                     Information:</Typography>
                 <ClientInformation user={user}/>
             </div>
             <div className="flex flex-col">
-                <Typography color={'primary'} variant={'h1'} component={'h1'} fontWeight={'bold'}>Portals
+                <Typography color={'primary'} variant={'h3'} component={'h3'} fontWeight={'bold'}>Portals
                     Information:</Typography>
                 {panelsContent}
             </div>

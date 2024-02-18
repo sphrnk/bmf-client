@@ -62,13 +62,15 @@ export const clientsApiSlice = apiSlice.injectEndpoints({
             }
         }),
         updateClient: builder.mutation({
-            query: data => ({
+            query: data => {
+                console.log(data)
+                return {
                 url: `/users/${data.id}`,
                 method: 'PATCH',
                 body: {
                     ...data,
                 }
-            }),
+            }},
             invalidatesTags: (result, error, arg) => [
                 {type: 'Client', id: arg.id}
             ]

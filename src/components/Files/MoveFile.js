@@ -27,6 +27,7 @@ function MoveFile() {
         if (cantMove) {
             return;
         }
+        console.log("selected:", selectedFiles)
         let files = [];
         selectedFiles.forEach((selected) => {
             const filename = selected.split('/').pop();

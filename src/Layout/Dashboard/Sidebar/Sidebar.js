@@ -36,12 +36,21 @@ const Sidebar = (props) => {
                 width: drawerWidth,
                 boxSizing: 'border-box',
             },
-        }} variant="persistent" anchor={'left'} open={sidebarState}>
-            <DrawerHeader color={'primary'}>
-                <Icon onClick={handleDrawerClose} color={"primary"}
-                      baseClassName="far"
-                      className="fa-solid fa-chevron-left cursor-pointer"/>
+        }} variant="persistent" anchor={'left'} open={sidebarState} onClose={handleDrawerClose}>
+            <DrawerHeader/>
+            <DrawerHeader color={'primary'} className={'w-full'}>
+                {/*<div className={'flex w-full justify-between items-center'}>*/}
+                    {/*<img*/}
+                    {/*    src={process.env.PUBLIC_URL + `/images/logo/brand-logo.png`}*/}
+                    {/*    className="w-36"*/}
+                    {/*    alt=""*/}
+                    {/*/>*/}
+                    <Icon onClick={handleDrawerClose} color={"primary"}
+                          baseClassName="far"
+                          className="fa-solid fa-chevron-left cursor-pointer"/>
+                {/*</div>*/}
             </DrawerHeader>
+
             <Divider/>
             <List>
                 {/*<ListItem disablePadding>*/}

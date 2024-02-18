@@ -1,11 +1,9 @@
 import {Tab, Tabs, Typography} from "@mui/material";
 import Box from "@mui/material/Box";
 import {useState, useContext} from "react";
-import PropTypes from "prop-types";
-import ClientIndividualPanels from "./ClientIndividualPanels";
-import ClientBusinessPanels from "./ClientBusinessPanels";
-import AuthContext from "../../store/auth-context";
 import {useSelector} from "react-redux";
+import UpdateClientIndividualPanels from "./UpdateClientIndividualPanels";
+import UpdateClientBusinessPanels from "./UpdateClientBusinessPanels";
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -37,9 +35,8 @@ function a11yProps(index) {
     };
 }
 
-const ClientPanelsInformation = (props) => {
+const UpdateClientPanelsInformation = (props) => {
     const {individualPortals, businessPortals, individualPortal, businessPortal} = props;
-    console.log('props:', businessPortal);
     const [shownTab, setShownTab] = useState(0);
     const {userInfo: user, userToken: token} = useSelector((state) => state.auth)
     let individualPortalsContent;
@@ -47,55 +44,14 @@ const ClientPanelsInformation = (props) => {
     const setTabHandler = (event, tab) => {
         setShownTab(tab);
     }
-    // if (props.individualPanels.length !== 0) {
-    //     // individualPanels;
-    // } else {
-    //     if (user.role !== "client") {
-    //         individualPanels =
-    //             <TabPanel value={shownTab} index={0}>
-    //                 <Typography className={"col-span-12"} variant={"h6"} component={"h6"}>
-    //                     There isn't any individual portals, contact to user to complete his info.</Typography>
-    //             </TabPanel>
-    //     } else {
-    //         individualPanels =
-    //             <TabPanel value={shownTab} index={0}>
-    //                 <Typography className={"col-span-12"} variant={"h6"} component={"h6"}>
-    //                     There isn't any individual portals</Typography>
-    //             </TabPanel>
-    //     }
-    // }
-    // if (props.businessPanels.length !== 0) {
-    //     businessPanels = (<TabPanel value={shownTab} index={1}>
-    //         <ClientBusinessPanels panels={props.businessPanels}/>
-    //     </TabPanel>)
-    // } else {
-    //     if (user.role !== "client")
-    {/*        businessPanels =*/
-    }
-    {/*            <TabPanel value={shownTab} index={1}>*/
-    }
-    {/*                <Typography className={"col-span-full"} variant={"h6"} component={"h6"}>*/
-    }
-    {/*                    There isn't any business portals, contact to user to complete his info.</Typography>*/
-    }
-    {/*            </TabPanel>*/
-    }
-    //     else {
-    //         businessPanels =
-    //             <TabPanel value={shownTab} index={1}>
-    //                 <Typography className={"col-span-full"} variant={"h6"} component={"h6"}>
-    //                     There isn't any business portals</Typography>
-    //             </TabPanel>
-    //     }
-    // }
     if (individualPortal) {
         individualPortalsContent = <TabPanel value={shownTab} index={0}>
-            <ClientIndividualPanels panels={individualPortals}/>
+            <UpdateClientIndividualPanels panels={individualPortals}/>
         </TabPanel>
     }
     if (businessPortal) {
         businessPortalsContent = <TabPanel value={shownTab} index={1}>
-            <ClientBusinessPanels panels={businessPortals}/>
+            <UpdateClientBusinessPanels panels={businessPortals}/>
         </TabPanel>
     }
     return (
@@ -122,4 +78,4 @@ const ClientPanelsInformation = (props) => {
         </>
     )
 }
-export default ClientPanelsInformation;
+export default UpdateClientPanelsInformation;

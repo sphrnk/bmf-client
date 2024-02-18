@@ -56,7 +56,8 @@ const Header = ({toggleTheme}) => {
     const theme = useTheme();
     const isDarkMode = theme.palette.mode === 'dark';
     return (
-        <MuiAppBar position="fixed" sidebarState={sidebarState} color={'primary'} enableColorOnDark>
+        <MuiAppBar position="fixed" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}} sidebarState={sidebarState}
+                   color={'primary'} enableColorOnDark>
             <Toolbar className={"justify-between"}>
                 <div className={"items-center flex"}>
                     <IconButton
@@ -68,9 +69,14 @@ const Header = ({toggleTheme}) => {
                     >
                         <i className="fa-regular fa-bars text-2xl"></i>
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        BMF Accounting Solutions
-                    </Typography>
+                    <div className={'flex flex-col p-4'}>
+                        <img
+                            src={process.env.PUBLIC_URL + `/images/logo/logo-white.png`}
+                            className="w-24"
+                            alt=""
+                        />
+                        <Typography variant={'body1'} component={'span'}>Accounting Solutions</Typography>
+                    </div>
                 </div>
                 {/*<img*/}
                 {/*    className="object-scale-down "*/}

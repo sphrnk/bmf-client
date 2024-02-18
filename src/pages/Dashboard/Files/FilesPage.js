@@ -9,6 +9,7 @@ import MoveFile from "../../../components/Files/MoveFile";
 import {useEffect} from "react";
 import {uiActions} from "../../../store/ui-slice";
 import {useDispatch} from "react-redux";
+import Rename from "../../../components/Files/Rename";
 
 const FilesPage = () => {
     const location = useLocation();
@@ -32,7 +33,7 @@ const FilesPage = () => {
     return (
         <>
             <div className={'flex flex-col gap-6 sm:flex-row sm:items-center mb-6 justify-between'}>
-                <Typography color={'primary'} variant={'h1'}>Portals</Typography>
+                <Typography color={'primary'} variant={'h3'} fontWeight={'bold'}>Portals</Typography>
                 <UploadFile/>
             </div>
             {!isError &&
@@ -43,6 +44,7 @@ const FilesPage = () => {
                 <p>Nothing To Show!</p>
             }
             <MoveFile/>
+            <Rename/>
 
             <FilesList isLoading={isLoading} isSuccess={isSuccess} selection={true} list={files}/>
             <FileViewer/>

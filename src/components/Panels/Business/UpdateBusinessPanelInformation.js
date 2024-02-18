@@ -7,13 +7,19 @@ import {
     InputLabel,
     MenuItem,
     TextField,
-    Typography
+    Typography, Button
 } from "@mui/material";
 import React, {useEffect, useRef, useState} from "react";
 import {IMaskInput} from "react-imask";
 import PropTypes from "prop-types";
 import useHttp from "../../../hooks/use-http";
 import {validateZipCode} from "../../../lib/utils";
+import Address from "../Address";
+import {useUpdateBusinessPanelMutation} from "../../../store/panel/panelApiSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {useNavigate} from "react-router-dom";
+import {selectCurrentUser} from "../../../store/auth/authSlice";
+import {uiActions} from "../../../store/ui-slice";
 
 const phoneTextMaskCustom = React.forwardRef(function TextMaskCustom(props, ref) {
     const {onChange, ...other} = props;
@@ -77,14 +83,16 @@ ubiTextMaskCustom.propTypes = {
     onChange: PropTypes.func.isRequired,
 };
 
-const UpdateBusinessPanelInformation = (props) => {
-    console.log('ZXZxzxczxcZ', props.panel, "asdasdDDDAS")
+const UpdateBusinessPanelInformation = ({panel}) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const user = useSelector(selectCurrentUser);
     const [formattedInputValues, setFormattedInputValues] = useState({
         phoneNumber: '',
         EINNumber: '',
         UBINumber: '',
     })
-    const [companyType, setCompanyType] = useState(props.panel.companyType);
+    const [companyType, setCompanyType] = useState(panel.companyType);
     const [companyTypeHasError, setCompanyTypeHasError] = useState(false);
     const companyNameInputRef = useRef();
     const companyEmailInputRef = useRef();
@@ -93,21 +101,25 @@ const UpdateBusinessPanelInformation = (props) => {
     const aptInputRef = useRef();
     const cityInputRef = useRef();
     const stateInputRef = useRef();
+    const [updateBusinessPanel, {isLoading, isSuccess, isError, error}] = useUpdateBusinessPanelMutation()
     useEffect(() => {
         setFormattedInputValues((prevState) => {
             return {
-                phoneNumber: props.panel.companyPhoneNumber,
-                EINNumber: props.panel.EINNumber,
-                UBINumber: props.panel.companyPhoneNumber,
+                phoneNumber: panel.companyPhoneNumber,
+                EINNumber: panel.EINNumber,
+                UBINumber: panel.UBINumber,
             }
         })
-    }, [props])
-    const {
-        sendRequest: sendZipCodeRequest,
-        status: zipCodeStatus,
-        data: zipCodeData,
-        error: zipCodeErr
-    } = useHttp(validateZipCode);
+        companyNameInputRef.current.value = panel.companyName;
+        companyEmailInputRef.current.value = panel.companyEmail;
+
+        zipCodeInputRef.current.value = panel.address.zipCode;
+        addressLineInputRef.current.value = panel.address.addressLine;
+        aptInputRef.current.value = panel.address.apt;
+        cityInputRef.current.value = panel.address.city;
+        stateInputRef.current.value = panel.address.state;
+    }, [panel])
+
     const companyTypeChangeHandler = (event) => {
         setCompanyType(event.target.value);
     };
@@ -119,18 +131,51 @@ const UpdateBusinessPanelInformation = (props) => {
         });
 
     };
-
-    const zipCodeHandler = async () => {
+    const updatePanelHandler = async () => {
+        const enteredCompanyName = companyNameInputRef.current.value;
+        const enteredEmailAddress = companyEmailInputRef.current.value;
+        const enteredEINNumber = formattedInputValues.EINNumber;
+        const enteredUBINumber = formattedInputValues.UBINumber;
+        const enteredPhoneNumber = formattedInputValues.phoneNumber;
         const enteredZipCode = zipCodeInputRef.current.value;
-        // console.log(enteredZipCode);
-        if (enteredZipCode.length === 5) {
-            await sendZipCodeRequest({enteredZipCode});
+        const enteredAddressLine = addressLineInputRef.current.value;
+        const enteredApt = aptInputRef.current.value;
+        const enteredCity = cityInputRef.current.value;
+        const enteredState = stateInputRef.current.value;
+
+        const data = {
+            companyName: enteredCompanyName,
+            email: enteredEmailAddress,
+            EINNumber: enteredEINNumber,
+            UBINumber: enteredUBINumber,
+            phoneNumber: enteredPhoneNumber,
+            companyType,
+            address: {
+                apt: enteredApt,
+                city: enteredCity,
+                state: enteredState,
+                zipCode: enteredZipCode,
+                addressLine: enteredAddressLine,
+            },
+            panelId: panel.id,
+            userId: user.id,
         }
+        await updateBusinessPanel(data);
     }
-    if (zipCodeStatus === "completed" && zipCodeData && !zipCodeErr) {
-        cityInputRef.current.value = zipCodeData.data.code[0];
-        stateInputRef.current.value = zipCodeData.data.code[1];
-    }
+    useEffect(() => {
+        if (isSuccess) {
+            dispatch(uiActions.showNotification({
+                status: 'success',
+                message: 'Client Panel Updated Successfully!'
+            }))
+            navigate('/clients')
+        } else if (isError) {
+            dispatch(uiActions.showNotification({
+                status: 'error',
+                message: error.data.message
+            }))
+        }
+    }, [isError, isSuccess, error])
     return (
         <div className={"flex flex-col gap-4"}>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -138,8 +183,8 @@ const UpdateBusinessPanelInformation = (props) => {
                     <TextField
                         label="Company Name"
                         required
-                        // inputRef={companyNameInputRef}
-                        value={props.panel.companyName}
+                        inputRef={companyNameInputRef}
+                        // value={panel.companyName}
                         type={'text'}
                     />
                     <FormControl fullWidth error={companyTypeHasError}>
@@ -166,8 +211,8 @@ const UpdateBusinessPanelInformation = (props) => {
                     <TextField
                         label="Email Address"
                         required
-                        // inputRef={companyEmailInputRef}
-                        value={props.panel.companyEmail}
+                        inputRef={companyEmailInputRef}
+                        // value={panel.companyEmail}
                         type={'email'}
                         InputProps={{
                             startAdornment: <InputAdornment position="start"><i
@@ -219,77 +264,17 @@ const UpdateBusinessPanelInformation = (props) => {
                     />
 
                 </div>
-                {/*<InfoItem editable={true} title={"Company Name"} text={panel.companyName}/>*/}
-                {/*<InfoItem editable={true} title={"Company Type"} text={panel.companyType}/>*/}
-                {/*<InfoItem editable={true} title={"Company Email"} text={panel.companyEmail}/>*/}
-                {/*<InfoItem editable={true} title={"Company Phone Number"} text={panel.companyPhoneNumber}/>*/}
-                {/*<InfoItem editable={true} title={"Company EIN Number"} text={panel.EINNumber}/>*/}
-                {/*<InfoItem editable={true} title={"Company UBI Number"} text={panel.UBINumber}/>*/}
             </div>
-            <Typography component={'h1'} variant={'h5'} fontWeight={'bold'} gutterBottom>
-                Address:
-            </Typography>
-            <div className="grid grid-cols-1 gap-4">
-                <div className={"grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4"}>
-                    <TextField
-                        label="Zip Code"
-                        required
-                        value={props.panel.address.zipCode}
-                        // onKeyUp={zipCodeHandler}
-                        // inputRef={zipCodeInputRef}
-                        type={'text'}
-                    />
-                    <TextField
-                        label="City"
-                        required
-                        // inputRef={cityInputRef}
-                        value={props.panel.address.city}
-                        disabled
-                        type={'text'}
-                        InputProps={{
-                            startAdornment: <InputAdornment position="start"><i
-                                className="fa-regular fa-city"></i></InputAdornment>,
-                        }}
-                    />
-                    <TextField
-                        label="State"
-                        required
-                        // inputRef={stateInputRef}
-                        value={props.panel.address.state}
-                        disabled
-                        type={'text'}
-                        InputProps={{
-                            startAdornment: <InputAdornment position="start"><i
-                                className="fa-regular fa-flag-usa"></i></InputAdornment>,
-                        }}
-                    />
-
-                </div>
-                <div className={"grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4"}>
-                    <TextField
-                        label="Address Line"
-                        required
-                        className={"col-span-8"}
-                        // inputRef={addressLineInputRef}
-                        value={props.panel.address.addressLine}
-                        type={'text'}
-                        InputProps={{
-                            startAdornment: <InputAdornment position="start"><i
-                                className="fa-regular fa-location-dot"></i></InputAdornment>,
-                        }}
-                    />
-                    <TextField
-                        label="Apt"
-                        className={"col-span-4"}
-                        // inputRef={aptInputRef}
-                        value={props.panel.address.apt}
-                        type={'text'}
-                        InputProps={{
-                            startAdornment: <InputAdornment position="start"><i
-                                className="fa-regular fa-building"></i></InputAdornment>,
-                        }}
-                    />
-                </div>
+            <Address ref={{
+                zipCodeInputRef: zipCodeInputRef,
+                cityInputRef: cityInputRef,
+                stateInputRef: stateInputRef,
+                addressLineInputRef: addressLineInputRef,
+                aptInputRef: aptInputRef
+            }}/>
+            <div className={'flex justify-end gap-4'}>
+                {/*<Button variant={'text'}>Cancel</Button>*/}
+                <Button onClick={updatePanelHandler} variant={'contained'}>Update Panel</Button>
             </div>
         </div>
     )

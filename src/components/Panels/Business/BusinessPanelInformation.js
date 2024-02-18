@@ -99,7 +99,6 @@ const BusinessPanelInformation = ({panel}) => {
     const cityInputRef = useRef();
     const stateInputRef = useRef();
     const [updateBusinessPanel, {isLoading, isSuccess, isError, error}] = useUpdateBusinessPanelMutation()
-    console.log("ppppp", panel)
     useEffect(() => {
         setValues(() => {
             return {
@@ -179,36 +178,6 @@ const BusinessPanelInformation = ({panel}) => {
                     <Box sx={{fontWeight: 'bold', color: 'text.primary'}}>Company EIN Number:</Box>
                     <Box sx={{fontWeight: 'normal', color: 'text.secondary'}}>{values.EINNumber}</Box>
                 </Box>
-                <div className={"grid grid-cols-1 gap-4 mb-4"}>
-                    {/*<TextField*/}
-                    {/*    label="EIN Number"*/}
-                    {/*    required*/}
-                    {/*    name="EINNumber"*/}
-                    {/*    value={formattedInputValues.EINNumber}*/}
-                    {/*    onChange={formattedInputChangeHandler}*/}
-                    {/*    type={'text'}*/}
-                    {/*    InputProps={{*/}
-                    {/*        inputComponent: einTextMaskCustom,*/}
-                    {/*        startAdornment: <InputAdornment position="start"><i*/}
-                    {/*            className="fa-regular fa-input-numeric"></i></InputAdornment>,*/}
-                    {/*    }}*/}
-                    {/*/>*/}
-                    {/*<TextField*/}
-                    {/*    label="UBI Number"*/}
-                    {/*    required*/}
-                    {/*    // ref={UBINumberInputRef}*/}
-                    {/*    name="UBINumber"*/}
-                    {/*    value={formattedInputValues.UBINumber}*/}
-                    {/*    onChange={formattedInputChangeHandler}*/}
-                    {/*    type={'text'}*/}
-                    {/*    InputProps={{*/}
-                    {/*        inputComponent: ubiTextMaskCustom,*/}
-                    {/*        startAdornment: <InputAdornment position="start"><i*/}
-                    {/*            className="fa-regular fa-input-numeric"></i></InputAdornment>,*/}
-                    {/*    }}*/}
-                    {/*/>*/}
-
-                </div>
             </div>
             <Address ref={{
                 zipCodeInputRef: zipCodeInputRef,

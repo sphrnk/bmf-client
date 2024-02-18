@@ -49,7 +49,7 @@ const FilesList = (props) => {
     //     setSelected([]);
     // };
 
-    const handleClick = (id) => {
+    const handleClick = (file, id) => {
         const selectedIndex = selected.indexOf(id);
         let newSelected = [];
         if (selectedIndex === -1) {

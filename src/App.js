@@ -1,6 +1,6 @@
 import {useContext} from "react";
 import "./App.css";
-import "./css/font-awsome.min.css";
+import "../../../training/hwi/public/assets/css/font-awsome.min.css";
 import Layout from "./Layout/Dashboard/Layout";
 import LoginPage from "./pages/Auth/LoginPage";
 import IndexPage from "./pages/Dashboard/IndexPage";

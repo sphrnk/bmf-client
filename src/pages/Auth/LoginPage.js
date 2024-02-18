@@ -111,8 +111,8 @@ const LoginPage = () => {
                         Reset Password
                     </Link>
                 </div>
-                <FormControlLabel control={<Checkbox checked={persist} onChange={handlePersist}/>}
-                                  label="TRUST THIS DEVICE"/>
+                {/*<FormControlLabel control={<Checkbox checked={persist} onChange={handlePersist}/>}*/}
+                {/*                  label="TRUST THIS DEVICE"/>*/}
                 <Button
                     variant={'contained'}
                     type="submit"

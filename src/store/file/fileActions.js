@@ -126,6 +126,19 @@ export const filesApiSlice = apiSlice.injectEndpoints({
             },
             invalidatesTags: (result, error, {id}) => [{type: 'Files', id}],
         }),
+        rename: builder.mutation({
+            query: (body) => {
+                // const {sourcePath, destinationPath} = body;
+                return {
+                    url: `/files/rename`,
+                    method: 'PATCH',
+                    body: {
+                        file: body,
+                    },
+                }
+            },
+            invalidatesTags: (result, error, {id}) => [{type: 'Files', id}],
+        }),
     })
 })
 
@@ -133,6 +146,7 @@ export const {
     useGetFilesQuery,
     useGetFileQuery,
     useMoveFileMutation,
+    useRenameMutation,
     useCreateFolderMutation,
     useUploadFileMutation,
     useDownloadFileQuery,

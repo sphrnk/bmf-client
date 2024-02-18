@@ -5,9 +5,12 @@ import LoadingSpinner from "../UI/LoadingSpinner";
 import Notif from "../UI/Notif";
 import AuthContext from "../../store/auth-context";
 import {Button, TextField} from "@mui/material";
+import {setCredentials} from "../../store/auth/authSlice";
+import {useDispatch} from "react-redux";
 
 const FirstTimeChangePasswordForm = (props) => {
     const {sendRequest, status, data, error} = useHttp(updateTempPassword);
+    const dispatch = useDispatch();
     let reqStatus;
     const authCtx = useContext(AuthContext);
     const {token} = authCtx;
@@ -37,6 +40,7 @@ const FirstTimeChangePasswordForm = (props) => {
         const expiryDate = new Date(
             new Date().getTime() + remainingMilliseconds
         );
+        dispatch(setCredentials({...data}))
         authCtx.login(user, secondToken, expiryDate);
         props.onConfirm();
     }

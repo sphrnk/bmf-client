@@ -36,7 +36,7 @@ const CreateClientPage = () => {
 
     return (
         <>
-            <Typography color={'primary'} component={"h1"} variant={"h1"} mb={2} fontWeight={"bold"}>Create
+            <Typography color={'primary'} component={"h3"} variant={"h3"} mb={2} fontWeight={"bold"}>Create
                 Client</Typography>
             <CreateClientForm isLoading={isLoading} onSubmit={createAccount}/>
         </>);

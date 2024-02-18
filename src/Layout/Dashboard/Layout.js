@@ -42,20 +42,23 @@ const Main = styled('main', {shouldForwardProp: (prop) => prop !== 'open'})(
                 easing: theme.transitions.easing.easeOut,
                 duration: theme.transitions.duration.enteringScreen,
             }),
-            // marginLeft: 0,
+            marginLeft: 0,
         }),
     }),
 );
 
 
-const DrawerHeader = styled('div')(({theme}) => ({
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
-}));
+const DrawerHeader = styled('div')(({theme}) => {
+    console.log(theme.mixins.toolbar)
+    return {
+        display: 'flex',
+        alignItems: 'center',
+        padding: theme.spacing(0, 1),
+        // necessary for content to be below app bar
+        ...theme.mixins.toolbar,
+        justifyContent: 'flex-end',
+    }
+});
 
 const Layout = (props) => {
     const {userInfo: user, userToken: token} = useSelector((state) => state.auth)
@@ -82,7 +85,7 @@ const Layout = (props) => {
                         <DrawerHeader/>
                         {/*<div className={mainClasses}>*/}
                         {/*<div className="container mx-auto py-5 px-4">*/}
-                        <Container maxWidth={'xl'}>
+                        <Container sx={{paddingTop: '20px'}} maxWidth={'xl'}>
                             {props.children}
                         </Container>
                         {/*</div>*/}
