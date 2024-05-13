@@ -72,6 +72,12 @@ const darkTheme = createTheme({
             paper: '#212121',
         }
     },
+    mixins: {
+        toolbar: {
+            minHeight: 56,
+            height: 86,
+        }
+    },
     shadows: Array(25).fill('none'),
     // typography: {
     //

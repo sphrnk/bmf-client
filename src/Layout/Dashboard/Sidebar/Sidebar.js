@@ -29,25 +29,27 @@ const Sidebar = (props) => {
         dispatch(uiActions.hideSidebar());
     };
     return (
-        <Drawer sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            '& .MuiDrawer-paper': {
+        <Drawer
+            sx={{
                 width: drawerWidth,
-                boxSizing: 'border-box',
-            },
-        }} variant="persistent" anchor={'left'} open={sidebarState} onClose={handleDrawerClose}>
+                flexShrink: 0,
+                '& .MuiDrawer-paper': {
+                    width: drawerWidth,
+                    background: "#5f5242",
+                    boxSizing: 'border-box',
+                },
+            }} anchor={'left'} open={sidebarState} onClose={handleDrawerClose}>
             <DrawerHeader/>
-            <DrawerHeader color={'primary'} className={'w-full'}>
+            <DrawerHeader className={'w-full'}>
                 {/*<div className={'flex w-full justify-between items-center'}>*/}
-                    {/*<img*/}
-                    {/*    src={process.env.PUBLIC_URL + `/images/logo/brand-logo.png`}*/}
-                    {/*    className="w-36"*/}
-                    {/*    alt=""*/}
-                    {/*/>*/}
-                    <Icon onClick={handleDrawerClose} color={"primary"}
-                          baseClassName="far"
-                          className="fa-solid fa-chevron-left cursor-pointer"/>
+                {/*<img*/}
+                {/*    src={process.env.PUBLIC_URL + `/images/logo/brand-logo.png`}*/}
+                {/*    className="w-36"*/}
+                {/*    alt=""*/}
+                {/*/>*/}
+                <Icon onClick={handleDrawerClose}
+                      baseClassName="far"
+                      className="fa-solid fa-chevron-left cursor-pointer"/>
                 {/*</div>*/}
             </DrawerHeader>
 
